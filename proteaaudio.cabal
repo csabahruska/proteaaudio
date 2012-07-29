@@ -43,7 +43,7 @@ Library
   Include-Dirs:         cbits
 
   if os(linux)
-    CC-Options:         "-D__LINUX_ALSA__"
+    CC-Options:         "-D__LINUX_ALSA__ -D__LINUX_PULSE__ -D__LINUX_OSS__"
     Extra-Libraries:    stdc++ pthread asound
   if os(darwin)
     CC-Options:         "-D__MACOSX_CORE__"
