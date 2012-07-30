@@ -1,6 +1,6 @@
 {-#LANGUAGE ForeignFunctionInterface#-}
 #include "proteaaudio_binding.h"
-module ProteaAudio (
+module Sound.ProteaAudio (
     initAudio,
     finishAudio,
     loaderAvailable,

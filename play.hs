@@ -2,7 +2,7 @@ import Control.Monad
 import System.Environment
 import Control.Concurrent
 
-import ProteaAudio
+import Sound.ProteaAudio
 
 main = do
     args <- getArgs
