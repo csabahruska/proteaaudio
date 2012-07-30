@@ -1,6 +1,6 @@
 import Control.Monad
 import System.Environment
-import System.Posix.Unistd
+import Control.Concurrent
 
 import ProteaAudio
 
@@ -11,6 +11,6 @@ main = do
     soundPlay smp 1 1 0 1
     let loop = do
             n <- soundActive
-            when  (n > 0) $ sleep 1 >> loop
+            when  (n > 0) $ threadDelay 1000000 >> loop
     loop
     finishAudio
