@@ -8,7 +8,7 @@ Author:              Csaba Hruska
 Maintainer:          csaba (dot) hruska (at) gmail (dot) com
 Stability:           Experimental
 Category:            Sound
-Tested-With:         GHC == 7.4.2
+Tested-With:         GHC == 7.8.3
 Cabal-Version:       >= 1.2
 Build-Type:          Simple
 
