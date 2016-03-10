@@ -5,6 +5,8 @@ module Sound.ProteaAudio (
     finishAudio,
     loaderAvailable,
     volume,
+    sampleFromMemoryWav,
+    sampleFromMemoryOgg,
     sampleFromFile,
     soundActive,
     soundStopAll,
@@ -26,7 +28,10 @@ fromSample (Sample s) = s
 {#fun initAudio {`Int', `Int', `Int'} -> `Bool'#}
 {#fun finishAudio {} -> `()'#}
 {#fun loaderAvailable {`String'} -> `Bool'#}
+{#fun sampleFromMemoryWav {id `Ptr CChar', `Int', `Float'} -> `Sample' toSample#}
+{#fun sampleFromMemoryOgg {id `Ptr CChar', `Int', `Float'} -> `Sample' toSample#}
 {#fun sampleFromFile {`String', `Float'} -> `Sample' toSample#}
+
 {#fun volume {`Float', `Float'} -> `()'#}
 {#fun soundActive {} -> `Int'#}
 {#fun soundStopAll {} -> `()'#}

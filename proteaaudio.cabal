@@ -1,5 +1,5 @@
 Name:                proteaaudio
-Version:             0.6.2
+Version:             0.6.3
 Synopsis:            A wrapper for the proteaaudio library.
 Description:         A wrapper for the proteaaudio library. http://viremo.eludi.net/proteaAudio/
 License:             BSD3
