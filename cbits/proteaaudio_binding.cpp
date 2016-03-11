@@ -62,25 +62,25 @@ void finishAudio() {
 
 int loaderAvailable(char* suffix) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     return audio.loaderAvailable(suffix);
 }
 
 void volume(float left, float right) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return;
+    if((&audio) == 0) return;
     audio.volume(left,right);
 }
 
 sample_t sampleFromFile(char* filename, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     return (int)audio.sampleFromFile(filename, volume);
 }
 
 sample_t sampleFromMemoryWav(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     AudioSample* pSample = loadWavFromMemory((unsigned char*)data, size);
     if(!pSample) return 0;
     unsigned int ret = audio.sampleFromMemory(*pSample, volume);
@@ -90,7 +90,7 @@ sample_t sampleFromMemoryWav(char *data, int size, float volume) {
 
 sample_t sampleFromMemoryOgg(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     AudioSample* pSample = loadOggFromMemory((unsigned char*)data, size);
     if(!pSample) return 0;
     unsigned int ret = audio.sampleFromMemory(*pSample, volume);
@@ -100,37 +100,37 @@ sample_t sampleFromMemoryOgg(char *data, int size, float volume) {
 
 int soundActive() {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     return (int)audio.soundActive();
 }
 
 void soundStopAll() {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return;
+    if((&audio) == 0) return;
     audio.soundStop();
 }
 
 // sound
 void soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return;
+    if((&audio) == 0) return;
     audio.soundLoop(sample, volumeL,volumeR,disparity,pitch);
 }
 
 void soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return;
+    if((&audio) == 0) return;
     audio.soundPlay(sample, volumeL,volumeR,disparity,pitch);
 }
 
 int soundUpdate(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     return audio.soundUpdate(sample, volumeL,volumeR,disparity,pitch);
 }
 
 int soundStop(sample_t sample) {
     DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == nullptr) return 0;
+    if((&audio) == 0) return 0;
     return audio.soundStop(sample);
 }

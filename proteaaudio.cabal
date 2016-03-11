@@ -1,14 +1,14 @@
 Name:                proteaaudio
-Version:             0.6.3
-Synopsis:            A wrapper for the proteaaudio library.
-Description:         A wrapper for the proteaaudio library. http://viremo.eludi.net/proteaAudio/
+Version:             0.6.4
+Synopsis:            Simple audio library for Windows/Linux/OSX.
+Description:         Simple audio library for Windows/Linux/OSX. Supports Ogg and Wav playback and multichannel mixing.
 License:             BSD3
 License-file:        LICENSE
 Author:              Csaba Hruska
-Maintainer:          csaba (dot) hruska (at) gmail (dot) com
+Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
-Tested-With:         GHC == 7.8.3
+Tested-With:         GHC == 7.10.3
 Cabal-Version:       >= 1.2
 Build-Type:          Simple
 
@@ -39,6 +39,10 @@ Extra-Source-Files:
   cbits/stb_vorbis.c
 
   Sound/ProteaAudio.chs
+
+source-repository head
+  type:     git
+  location: https://github.com/csabahruska/proteaaudio
 
 Library
   Build-Depends:        base >= 4 && < 5
