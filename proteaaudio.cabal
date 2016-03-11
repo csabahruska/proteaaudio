@@ -9,7 +9,7 @@ Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
 Tested-With:         GHC == 7.10.3
-Cabal-Version:       >= 1.2
+Cabal-Version:       >= 1.6
 Build-Type:          Simple
 
 Extra-Source-Files:
