@@ -1,5 +1,9 @@
 #include "proteaaudio_binding.h"
 #include "proAudioRt.h"
+#include <cstring>
+#include <cstdlib>
+
+using namespace std;
 
 typedef struct {
   unsigned char * data;
