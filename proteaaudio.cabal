@@ -40,6 +40,8 @@ Extra-Source-Files:
 
   Sound/ProteaAudio.chs
 
+  example/play.hs
+
 Flag example
   Description: Build with example
   Default: False
