@@ -49,6 +49,12 @@ DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsig
 	oParams.nChannels = 2; // stereo
 	oParams.firstChannel = 0;
 
+    // initialize tracks:
+    m_nSound=nTracks;
+    ma_sound=new _AudioTrack[m_nSound];
+	memset(ma_sound,0,m_nSound*sizeof(_AudioTrack));
+	m_freqOut = frequency;
+
 	try {
 		m_dac.openStream( &oParams, NULL, RTAUDIO_SINT16, frequency, &chunkSize, &cbMix, (void *)this );
 		m_dac.startStream();
@@ -59,11 +65,6 @@ DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsig
 		return;
 	}
 
-    // initialize tracks:
-    m_nSound=nTracks;
-    ma_sound=new _AudioTrack[m_nSound];
-	memset(ma_sound,0,m_nSound*sizeof(_AudioTrack));
-	m_freqOut = frequency;
 }
 
 DeviceAudioRt::~DeviceAudioRt() {

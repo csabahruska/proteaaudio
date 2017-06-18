@@ -82,7 +82,7 @@ sample_t sampleFromFile(char* filename, float volume) {
     return (int)audio.sampleFromFile(filename, volume);
 }
 
-sample_t sampleFromMemoryWav(char *data, int size, float volume) {
+sample_t _sampleFromMemoryWav(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     AudioSample* pSample = loadWavFromMemory((unsigned char*)data, size);
@@ -92,7 +92,7 @@ sample_t sampleFromMemoryWav(char *data, int size, float volume) {
     return (int)ret;
 }
 
-sample_t sampleFromMemoryOgg(char *data, int size, float volume) {
+sample_t _sampleFromMemoryOgg(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     AudioSample* pSample = loadOggFromMemory((unsigned char*)data, size);

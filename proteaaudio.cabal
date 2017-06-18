@@ -1,5 +1,5 @@
 Name:                proteaaudio
-Version:             0.6.5
+Version:             0.7.0
 Synopsis:            Simple audio library for Windows, Linux, OSX.
 Description:         Simple audio library for Windows, Linux, OSX. Supports Ogg and Wav playback and multichannel mixing.
 License:             BSD3
@@ -8,7 +8,7 @@ Author:              Csaba Hruska
 Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
-Tested-With:         GHC == 7.10.3
+Tested-With:         GHC == 8.0.2
 Cabal-Version:       >= 1.10
 Build-Type:          Simple
 
@@ -42,6 +42,9 @@ Extra-Source-Files:
 
   example/play.hs
 
+  README.md
+  CHANGELOG.md
+
 Flag example
   Description: Build with example
   Default: False
@@ -51,7 +54,9 @@ source-repository head
   location: https://github.com/csabahruska/proteaaudio
 
 Library
-  Build-Depends:        base >= 4 && < 5
+  Build-Depends:        base >= 4 && < 5,
+                        bytestring == 0.10.*
+
   default-language:     Haskell2010
 
   Build-tools:          c2hs
@@ -70,8 +75,8 @@ Library
     CC-Options:         "-D__WINDOWS_DS__"
     Extra-Libraries:    stdc++ ole32 dsound winmm
   if os(linux)
-    CC-Options:         "-D__LINUX_ALSA__ -D__LINUX_PULSE__ -D__LINUX_OSS__"
-    Extra-Libraries:    stdc++ pthread asound
+    CC-Options:         "-D__LINUX_PULSE__"
+    Extra-Libraries:    stdc++ pthread pulse-simple pulse
   if os(darwin)
     CC-Options:         "-D__MACOSX_CORE__"
     Extra-Libraries:    stdc++ pthread
@@ -91,6 +96,6 @@ executable proteaaudio-play
 
   build-depends:
     base >= 4 && < 5,
-    filepath >=1.4 && <1.5,
+    filepath >=1.4 && <2,
     bytestring == 0.10.*,
     proteaaudio
