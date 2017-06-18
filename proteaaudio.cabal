@@ -82,8 +82,6 @@ Library
     Extra-Libraries:    stdc++ pthread
     Frameworks:         CoreFoundation CoreAudio
 
-  ghc-options: -O2
-
 executable proteaaudio-play
   if flag(example)
     Buildable: True
