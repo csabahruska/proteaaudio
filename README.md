@@ -1,9 +1,10 @@
 # Overview
 
-ProteaAudio is a stereo audio mixer/playback library
-for Linux (native ALSA, Jack, and OSS),
-Macintosh OS X (CoreAudio and Jack),
-and Windows (DirectSound and ASIO) operating systems.
+ProteaAudio is a stereo audio mixer/playback library for
+
+- Linux *(PulseAudio)*
+- Macintosh OS X *(CoreAudio)*
+- Windows *(DirectSound)*
 
 
 # Example

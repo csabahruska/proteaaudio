@@ -1,104 +1,117 @@
 {-|
-    ProteaAudio is a stereo audio mixer/playback library
-    for Linux (native ALSA, Jack, and OSS),
-    Macintosh OS X (CoreAudio and Jack),
-    and Windows (DirectSound and ASIO) operating systems.
+ProteaAudio is a stereo audio mixer/playback library for
+
+* Linux /(PusleAudio)/
+
+* Macintosh OS X /(CoreAudio)/
+
+* Windows /(DirectSound)/
 -}
 {-#LANGUAGE ForeignFunctionInterface#-}
 #include "proteaaudio_binding.h"
 module Sound.ProteaAudio (
+    -- * Sample
+    Sample(),
+
+    -- * Audio System Setup
     initAudio,
     finishAudio,
-    loaderAvailable,
+
+    -- * Main Mixer
     volume,
+    soundActive,
+    soundStopAll,
+
+    -- * Sample Loading
+    loaderAvailable,
     sampleFromMemoryWav,
     sampleFromMemoryOgg,
     sampleFromFile,
-    soundActive,
-    soundStopAll,
+
+    -- * Sample Palyback
     soundLoop,
     soundPlay,
     soundUpdate,
-    soundStop,
-    Sample()
+    soundStop
  ) where
 
 import Foreign
 import Foreign.C
 import Data.ByteString (ByteString, useAsCStringLen)
 
--- | audio sample handle
-newtype Sample = Sample {#type sample_t#}
+-- | Audio sample handle
+newtype Sample = Sample{ fromSample :: {#type sample_t#} }
 
-toSample s = Sample s
-fromSample (Sample s) = s
 
--- | initializes the audio system
-{#fun initAudio
+-- | Initializes the audio system.
+{#fun initAudio 
     { `Int' -- ^ the maximum number of sounds that are played parallely. Computation time is linearly correlated to this factor.
     , `Int' -- ^ sample frequency of the playback in Hz. 22050 corresponds to FM radio 44100 is CD quality. Computation time is linearly correlated to this factor.
     , `Int' -- ^ the number of bytes that are sent to the sound card at once. Low numbers lead to smaller latencies but need more computation time (thread switches). If a too small number is chosen, the sounds might not be played continuously. The default value 512 guarantees a good latency below 40 ms at 22050 Hz sample frequency.
     } -> `Bool' -- ^ returns True on success
 #}
 
--- | releases the audio device and cleans up resources
+-- *
+
+-- | Releases the audio device and cleans up resources.
 {#fun finishAudio {} -> `()'#}
 
--- | checks if loader for this file type is available
+-- | Checks if loader for this file type is available.
 {#fun loaderAvailable
   { `String' -- ^ file extension (e.g. ogg)
   } -> `Bool'
 #}
 
--- | loads wav sound sample from memory buffer
+
+-- | Loads wav sound sample from memory buffer.
 {#fun _sampleFromMemoryWav
   { id `Ptr CChar' -- ^ memory buffer pointer
   , `Int' -- ^ memory buffer size in bytes
   , `Float' -- ^ volume
-  } -> `Sample' toSample -- ^ returns handle
+  } -> `Sample' Sample -- ^ returns handle
 #}
 
--- | loads ogg sound sample from memory buffer
+-- | Loads ogg sound sample from memory buffer.
 {#fun _sampleFromMemoryOgg
   { id `Ptr CChar' -- ^ memory buffer pointer
   , `Int' -- ^ memory buffer size in bytes
   , `Float' -- ^ volume
-  } -> `Sample' toSample -- ^ returns handle
+  } -> `Sample' Sample -- ^ returns handle
 #}
 
--- | loads wav sound sample from memory buffer
+-- | Loads wav sound sample from memory buffer.
 sampleFromMemoryWav :: ByteString -- ^ wav sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
 sampleFromMemoryWav wavData volume = useAsCStringLen wavData $ \(ptr, size) -> _sampleFromMemoryWav ptr size volume
 
--- | loads ogg sound sample from memory buffer
+-- | Loads ogg sound sample from memory buffer.
 sampleFromMemoryOgg :: ByteString -- ^ ogg sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
 sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _sampleFromMemoryOgg ptr size volume
 
--- | loads a sound sample from file
+-- | Loads a sound sample from file.
 {#fun sampleFromFile
   { `String' -- ^ sample filepath
   , `Float' -- ^ volume
-  } -> `Sample' toSample -- ^ returns handle
+  } -> `Sample' Sample -- ^ returns handle
 #}
 
--- | set mixer volume
+-- | Set main mixer volume.
 {#fun volume
   { `Float' -- ^ left
   , `Float' -- ^ right
   } -> `()'
 #}
 
--- | number of currently active sounds
+-- | Return the number of currently active sounds.
 {#fun soundActive {} -> `Int'#}
 
--- | stops all sounds immediately
+-- | Stops all sounds immediately.
 {#fun soundStopAll {} -> `()'#}
 
--- | plays a specified sound sample continuously and sets its parameters
+-- | Plays a specified sound sample continuously and sets its parameters.
 {#fun soundLoop
   { fromSample `Sample' -- ^ handle of a previously loaded sample
   , `Float' -- ^ left volume
@@ -108,7 +121,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   } -> `()'
 #}
 
--- | plays a specified sound sample once and sets its parameters
+-- | Plays a specified sound sample once and sets its parameters.
 {#fun soundPlay
   { fromSample `Sample' -- ^ handle of a previously loaded sample
   , `Float' -- ^ left volume
@@ -118,7 +131,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   } -> `()'
 #}
 
--- | updates parameters of a specified sound
+-- | Updates parameters of a specified sound.
 {#fun soundUpdate
   { fromSample `Sample' -- ^ handle of a currently active sound
   , `Float' -- ^ left volume
@@ -128,5 +141,6 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   } -> `Bool' -- ^ return True in case the parameters have been updated successfully
 #}
 
--- | stops a specified sound immediately
+-- | Stops a specified sound immediately.
 {#fun soundStop {fromSample `Sample'} -> `Bool'#}
+
