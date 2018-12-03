@@ -1,14 +1,14 @@
 Name:                proteaaudio
-Version:             0.7.0.1
+Version:             0.7.1.0
 Synopsis:            Simple audio library for Windows, Linux, OSX.
-Description:         Simple audio library for Windows, Linux, OSX. Supports Ogg and Wav playback and multichannel mixing.
+Description:         Simple audio library for Windows, Linux, OSX. Supports PCM, Ogg and Wav playback and multichannel mixing.
 License:             BSD3
 License-file:        LICENSE
 Author:              Csaba Hruska
 Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
-Tested-With:         GHC == 8.0.2
+Tested-With:         GHC == 8.4.4
 Cabal-Version:       >= 1.10
 Build-Type:          Simple
 

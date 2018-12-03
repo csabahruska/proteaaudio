@@ -24,6 +24,7 @@ module Sound.ProteaAudio (
 
     -- * Sample Loading
     loaderAvailable,
+    sampleFromMemoryPcm,
     sampleFromMemoryWav,
     sampleFromMemoryOgg,
     sampleFromFile,
@@ -44,7 +45,7 @@ newtype Sample = Sample{ fromSample :: {#type sample_t#} }
 
 
 -- | Initializes the audio system.
-{#fun initAudio 
+{#fun initAudio
     { `Int' -- ^ the maximum number of sounds that are played parallely. Computation time is linearly correlated to this factor.
     , `Int' -- ^ sample frequency of the playback in Hz. 22050 corresponds to FM radio 44100 is CD quality. Computation time is linearly correlated to this factor.
     , `Int' -- ^ the number of bytes that are sent to the sound card at once. Low numbers lead to smaller latencies but need more computation time (thread switches). If a too small number is chosen, the sounds might not be played continuously. The default value 512 guarantees a good latency below 40 ms at 22050 Hz sample frequency.
@@ -63,6 +64,17 @@ newtype Sample = Sample{ fromSample :: {#type sample_t#} }
 #}
 
 
+-- | Loads raw linear pcm sound sample from memory buffer.
+{#fun _sampleFromMemoryPcm
+  { id `Ptr CChar' -- ^ memory buffer pointer
+  , `Int' -- ^ memory buffer size in bytes
+  , `Int' -- ^ number of channels, e.g. 1 for mono, 2 for stereo.
+  , `Int' -- ^ sample rate, i.e. 44100 Hz
+  , `Int' -- ^ bits per sample, i.e. 8/16/32
+  , `Float' -- ^ volume
+  } -> `Sample' Sample -- ^ returns handle
+#}
+
 -- | Loads wav sound sample from memory buffer.
 {#fun _sampleFromMemoryWav
   { id `Ptr CChar' -- ^ memory buffer pointer
@@ -78,6 +90,16 @@ newtype Sample = Sample{ fromSample :: {#type sample_t#} }
   , `Float' -- ^ volume
   } -> `Sample' Sample -- ^ returns handle
 #}
+
+-- | Loads raw linear pcm sound sample from memory buffer.
+sampleFromMemoryPcm :: ByteString -- ^ pcm sample data; array of pcm samples (signed 8 bit int, signed 16 bit int or 32 bit float)
+                    -> Int -- ^ number of channels, e.g. 1 for mono, 2 for stereo.
+                    -> Int -- ^ sample rate, i.e. 44100 Hz
+                    -> Int -- ^ bits per sample, i.e. 8/16/32
+                    -> Float -- ^ volume
+                    -> IO Sample -- ^ return sample handle
+sampleFromMemoryPcm pcmData channels sampleRate bitsPerSample volume =
+  useAsCStringLen pcmData $ \(ptr, size) -> _sampleFromMemoryPcm ptr size channels sampleRate bitsPerSample volume
 
 -- | Loads wav sound sample from memory buffer.
 sampleFromMemoryWav :: ByteString -- ^ wav sample data

@@ -1,3 +1,7 @@
+# 0.7.1.0
+- add sampleFromMemoryPcm
+- update stb_vorbis to v1.14
+
 # 0.7.0.1
 - better haddock
 

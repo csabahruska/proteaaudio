@@ -25,13 +25,13 @@ static size_t mem_fread ( void * ptr, size_t size, size_t count, FILE * stream_ 
 
 static AudioSample* loadWavFromMemory(unsigned char * ptr, size_t len) {
   MEM_FILE* fp = new MEM_FILE();
-	if (!fp) return 0;
-	fp->data = ptr;
-	fp->size = len;
-	fp->pos = 0;
-	AudioSample * pSample = AudioSample::readWav((FILE*)fp, mem_fread);
-	delete fp;
-	return pSample;
+  if (!fp) return 0;
+  fp->data = ptr;
+  fp->size = len;
+  fp->pos = 0;
+  AudioSample * pSample = AudioSample::readWav((FILE*)fp, mem_fread);
+  delete fp;
+  return pSample;
 }
 
 extern "C" {
@@ -39,17 +39,17 @@ extern int stb_vorbis_decode_memory(unsigned char *mem, int len, int *channels, 
 };
 
 static AudioSample* loadOggFromMemory(unsigned char * file_data_ptr, size_t file_data_len) {
-	int channels, sampleRate;
-	short *decoded;
-	int len = stb_vorbis_decode_memory(file_data_ptr, file_data_len, &channels, &sampleRate, &decoded);
-	if(len<0) return 0;
-	// convert to AudioSample:
-	unsigned int size = len*channels*sizeof(short);
-	unsigned char * data = new unsigned char[size];
-	if(!data) return 0;
-	memcpy(data,decoded, size);
-	free(decoded);
-	return new AudioSample(data, size, channels, sampleRate, 16);
+  int channels, sampleRate;
+  short *decoded;
+  int len = stb_vorbis_decode_memory(file_data_ptr, file_data_len, &channels, &sampleRate, &decoded);
+  if(len<0) return 0;
+  // convert to AudioSample:
+  unsigned int size = len*channels*sizeof(short);
+  unsigned char * data = new unsigned char[size];
+  if(!data) return 0;
+  memcpy(data,decoded, size);
+  free(decoded);
+  return new AudioSample(data, size, channels, sampleRate, 16);
 }
 
 
@@ -82,6 +82,15 @@ sample_t sampleFromFile(char* filename, float volume) {
     return (int)audio.sampleFromFile(filename, volume);
 }
 
+sample_t _sampleFromMemoryPcm(char *data, int size, int channels, int sampleRate, int bitsPerSample, float volume) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    AudioSample * pSample = new AudioSample((unsigned char*)data, size, channels, sampleRate, bitsPerSample);
+    if(!pSample) return 0;
+    unsigned int ret = audio.sampleFromMemory(*pSample, volume);
+    delete pSample;
+    return (int)ret;
+}
 sample_t _sampleFromMemoryWav(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
