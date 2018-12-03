@@ -6,6 +6,12 @@ ProteaAudio is a stereo audio mixer/playback library for
 - Macintosh OS X *(CoreAudio)*
 - Windows *(DirectSound)*
 
+Supported audio formats:
+- Wav
+- Ogg
+- Raw linear PCM
+
+Samples can be loaded from file or memory.
 
 # Example
 
