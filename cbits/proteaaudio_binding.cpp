@@ -82,10 +82,13 @@ sample_t sampleFromFile(char* filename, float volume) {
     return (int)audio.sampleFromFile(filename, volume);
 }
 
-sample_t _sampleFromMemoryPcm(char *data, int size, int channels, int sampleRate, int bitsPerSample, float volume) {
+sample_t _sampleFromMemoryPcm(char *pcm_data, int size, int channels, int sampleRate, int bitsPerSample, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
-    AudioSample * pSample = new AudioSample((unsigned char*)data, size, channels, sampleRate, bitsPerSample);
+    unsigned char * data = new unsigned char[size];
+    if(!data) return 0;
+    memcpy(data, pcm_data, size);
+    AudioSample * pSample = new AudioSample(data, size, channels, sampleRate, bitsPerSample);
     if(!pSample) return 0;
     unsigned int ret = audio.sampleFromMemory(*pSample, volume);
     delete pSample;
