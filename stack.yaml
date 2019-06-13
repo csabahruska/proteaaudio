@@ -7,3 +7,7 @@ packages:
 flags:
   proteaaudio:
     example: true
+nix:
+  enable: false
+  packages: [pulseaudio]
+  pure: false
