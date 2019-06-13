@@ -13,6 +13,21 @@ Supported audio formats:
 
 Samples can be loaded from file or memory.
 
+# Build
+
+### Stack
+
+```bash
+stack setup
+stack build
+```
+
+### Nix:
+
+``` bash
+stack --nix build
+```
+
 # Example
 
 ```haskell
