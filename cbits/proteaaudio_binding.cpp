@@ -127,26 +127,26 @@ void soundStopAll() {
 }
 
 // sound
-void soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
-    DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == 0) return;
-    audio.soundLoop(sample, volumeL,volumeR,disparity,pitch);
-}
-
-void soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
-    DeviceAudio & audio = DeviceAudio::singleton();
-    if((&audio) == 0) return;
-    audio.soundPlay(sample, volumeL,volumeR,disparity,pitch);
-}
-
-int soundUpdate(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
-    return audio.soundUpdate(sample, volumeL,volumeR,disparity,pitch);
+    return audio.soundLoop(sample, volumeL, volumeR, disparity, pitch);
 }
 
-int soundStop(sample_t sample) {
+sound_t  soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
-    return audio.soundStop(sample);
+    return audio.soundPlay(sample, volumeL, volumeR, disparity, pitch);
+}
+
+int soundUpdate(sound_t sound, float volumeL, float volumeR, float disparity, float pitch) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    return audio.soundUpdate(sound, volumeL, volumeR, disparity, pitch);
+}
+
+int soundStop(sound_t sound) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    return audio.soundStop(sound);
 }

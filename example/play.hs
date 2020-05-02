@@ -9,8 +9,11 @@ import Sound.ProteaAudio
 waitPayback = do
   n <- soundActive
   when  (n > 0) $ do
-    threadDelay 1000000
+    threadDelay oneSec
     waitPayback
+
+oneSec :: Int
+oneSec = 1000000 -- micro seconds
 
 main = do
     args <- getArgs
@@ -24,7 +27,14 @@ main = do
     -- (A) load sample from file
     sampleA <- sampleFromFile filename 1.0 -- volume
 
-    soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+    -- start two sound tracks with shared sample data
+    sndTrkA <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+    threadDelay oneSec -- wait 1 sec
+    sndTrkB <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+    -- play 3 sec
+    threadDelay $ 3 * oneSec
+    soundStop sndTrkB
+    -- wait sndTrkA to finish
     waitPayback
 
     -- (B) load from memory buffer

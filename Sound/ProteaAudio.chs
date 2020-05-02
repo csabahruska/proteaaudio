@@ -12,6 +12,7 @@ ProteaAudio is a stereo audio mixer/playback library for
 module Sound.ProteaAudio (
     -- * Sample
     Sample(),
+    Sound(),
 
     -- * Audio System Setup
     initAudio,
@@ -29,7 +30,7 @@ module Sound.ProteaAudio (
     sampleFromMemoryOgg,
     sampleFromFile,
 
-    -- * Sample Palyback
+    -- * Sample Playback
     soundLoop,
     soundPlay,
     soundUpdate,
@@ -40,8 +41,11 @@ import Foreign
 import Foreign.C
 import Data.ByteString (ByteString, useAsCStringLen)
 
--- | Audio sample handle
+-- | Audio sample resource handle. A sample can be shared between multiple Sound tracks. (abstraction for data)
 newtype Sample = Sample{ fromSample :: {#type sample_t#} }
+
+-- | Sound track handle. It is used to control the audio playback. (abstraction for playback)
+newtype Sound = Sound{ fromSound :: {#type sound_t#} }
 
 
 -- | Initializes the audio system.
@@ -140,7 +144,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   , `Float' -- ^ right volume
   , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right
   , `Float' -- ^ pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample
-  } -> `()'
+  } -> `Sound' Sound
 #}
 
 -- | Plays a specified sound sample once and sets its parameters.
@@ -150,12 +154,12 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   , `Float' -- ^ right volume
   , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right
   , `Float' -- ^ pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample
-  } -> `()'
+  } -> `Sound' Sound
 #}
 
 -- | Updates parameters of a specified sound.
 {#fun soundUpdate
-  { fromSample `Sample' -- ^ handle of a currently active sound
+  { fromSound `Sound' -- ^ handle of a currently active sound
   , `Float' -- ^ left volume
   , `Float' -- ^ right volume
   , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right
@@ -164,5 +168,5 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
 #}
 
 -- | Stops a specified sound immediately.
-{#fun soundStop {fromSample `Sample'} -> `Bool'#}
+{#fun soundStop {fromSound `Sound'} -> `Bool'#}
 
