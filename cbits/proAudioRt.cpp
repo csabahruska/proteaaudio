@@ -59,7 +59,7 @@ DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsig
 		m_dac.openStream( &oParams, NULL, RTAUDIO_SINT16, frequency, &chunkSize, &cbMix, (void *)this );
 		m_dac.startStream();
 	}
-	catch ( RtError& e ) {
+	catch ( RtAudioError& e ) {
 		fprintf(stderr,"%s\n", e.getMessage().c_str());
 		if(m_dac.isStreamOpen()) m_dac.closeStream();
 		return;
