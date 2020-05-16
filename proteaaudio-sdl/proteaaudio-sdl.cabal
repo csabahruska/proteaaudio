@@ -1,10 +1,10 @@
-Name:                proteaaudio
+Name:                proteaaudio-sdl
 Version:             0.8.1
-Synopsis:            Simple audio library for Windows, Linux, OSX.
-Description:         Simple audio library for Windows, Linux, OSX. Supports PCM, Ogg and Wav playback and multichannel mixing.
+Synopsis:            Simple audio library for SDL.
+Description:         Simple audio library for SDL. Supports PCM, Ogg and Wav playback and multichannel mixing.
 License:             BSD3
 License-file:        LICENSE
-Author:              Csaba Hruska
+Author:              Csaba Hruska, Michael Karg
 Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
@@ -27,17 +27,15 @@ Extra-Source-Files:
   cbits/include/iasiothiscallresolver.cpp
   cbits/include/iasiothiscallresolver.h
   cbits/include/soundcard.h
-  cbits/RtAudio.cpp
-  cbits/RtAudio.h
   cbits/proAudio.cpp
   cbits/proAudio.h
-  cbits/proAudioRt.cpp
-  cbits/proAudioRt.h
+  cbits/proAudioSdl.cpp
+  cbits/proAudioSdl.h
   cbits/proteaaudio_binding.cpp
   cbits/proteaaudio_binding.h
   cbits/stb_vorbis.c
 
-  Sound/ProteaAudio.chs
+  Sound/ProteaAudio/SDL.chs
 
   example/play.hs
 
@@ -59,27 +57,22 @@ Library
   default-language:     Haskell2010
 
   Build-tools:          c2hs
-  Exposed-Modules:      Sound.ProteaAudio
+  Exposed-Modules:      Sound.ProteaAudio.SDL
   Hs-Source-Dirs:       .
 
-  C-Sources:            cbits/RtAudio.cpp
-                        cbits/proAudio.cpp
-                        cbits/proAudioRt.cpp
+  C-Sources:            cbits/proAudio.cpp
+                        cbits/proAudioSdl.cpp
                         cbits/proteaaudio_binding.cpp
                         cbits/stb_vorbis.c
 
   Include-Dirs:         cbits cbits/include
 
-  if os(windows)
-    CC-Options:         "-D__WINDOWS_DS__"
-    Extra-Libraries:    stdc++ ole32 dsound winmm
-  if os(linux)
-    CC-Options:         "-D__LINUX_PULSE__"
-    Extra-Libraries:    stdc++ pthread pulse-simple pulse
-  if os(darwin)
-    CC-Options:         "-D__MACOSX_CORE__"
-    Extra-Libraries:    stdc++ pthread
-    Frameworks:         CoreFoundation CoreAudio
+  Includes:             SDL.h
+    
+  Extra-Libraries:      SDL2
+
+  pkgconfig-depends:    sdl2 >= 2.0.6
+
 
 executable proteaaudio-play
   if flag(example)
@@ -95,4 +88,4 @@ executable proteaaudio-play
     base >= 4 && < 5,
     filepath >=1.4 && <2,
     bytestring == 0.10.*,
-    proteaaudio
+    proteaaudio-sdl

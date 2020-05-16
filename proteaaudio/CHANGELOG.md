@@ -1,3 +1,6 @@
+# 0.8.1
+- update RtAudio to 5.1.0
+
 # 0.8.0
 - fix: distinct data and playback handles
 - introduce Sound handle type, an abstraction for playback audio track

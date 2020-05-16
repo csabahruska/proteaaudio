@@ -6,11 +6,11 @@ import Control.Concurrent
 
 import Sound.ProteaAudio
 
-waitPayback = do
+waitPlayback = do
   n <- soundActive
   when  (n > 0) $ do
     threadDelay oneSec
-    waitPayback
+    waitPlayback
 
 oneSec :: Int
 oneSec = 1000000 -- micro seconds
@@ -35,7 +35,7 @@ main = do
     threadDelay $ 3 * oneSec
     soundStop sndTrkB
     -- wait sndTrkA to finish
-    waitPayback
+    waitPlayback
 
     -- (B) load from memory buffer
     buffer <- SB.readFile filename
@@ -44,6 +44,6 @@ main = do
       ".wav" -> sampleFromMemoryWav buffer 1.0
 
     soundPlay sampleB 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
-    waitPayback
+    waitPlayback
 
     finishAudio

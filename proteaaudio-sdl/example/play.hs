@@ -1,43 +1,10 @@
-# Overview
-
-ProteaAudio is a stereo audio mixer/playback library for
-
-- Linux *(PulseAudio)*
-- Macintosh OS X *(CoreAudio)*
-- Windows *(DirectSound)*
-
-Supported audio formats:
-- Wav
-- Ogg
-- Raw linear PCM
-
-Samples can be loaded from file or memory.
-
-# Build
-
-### Stack
-
-```bash
-stack setup
-stack build
-```
-
-### Nix:
-
-``` bash
-stack --nix build
-```
-
-# Example
-
-```haskell
 import Control.Monad
 import System.Environment
 import System.FilePath
 import qualified Data.ByteString as SB
 import Control.Concurrent
 
-import Sound.ProteaAudio
+import Sound.ProteaAudio.SDL
 
 waitPlayback = do
   n <- soundActive
@@ -80,4 +47,3 @@ main = do
     waitPlayback
 
     finishAudio
-```

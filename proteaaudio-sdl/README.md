@@ -1,10 +1,6 @@
 # Overview
 
-ProteaAudio is a stereo audio mixer/playback library for
-
-- Linux *(PulseAudio)*
-- Macintosh OS X *(CoreAudio)*
-- Windows *(DirectSound)*
+ProteaAudio-SDL is a stereo audio mixer/playback library for SDL *(platform independent)*.
 
 Supported audio formats:
 - Wav
@@ -37,7 +33,7 @@ import System.FilePath
 import qualified Data.ByteString as SB
 import Control.Concurrent
 
-import Sound.ProteaAudio
+import Sound.ProteaAudio.SDL
 
 waitPlayback = do
   n <- soundActive
