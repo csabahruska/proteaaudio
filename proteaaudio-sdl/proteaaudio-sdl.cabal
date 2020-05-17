@@ -71,7 +71,7 @@ Library
     
   Extra-Libraries:      SDL2
 
-  pkgconfig-depends:    sdl2 >= 2.0.6
+  pkgconfig-depends:    sdl2 >= 2.0.4
 
 
 executable proteaaudio-play
