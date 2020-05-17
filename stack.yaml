@@ -1,0 +1,16 @@
+resolver: lts-12.21
+
+packages:
+- 'proteaaudio'
+- 'proteaaudio-sdl'
+
+# Override default flag values for local packages and extra-deps
+flags:
+  proteaaudio:
+    example: true
+  proteaaudio-sdl:
+    example: true
+nix:
+  enable: false
+  packages: [pulseaudio]
+  pure: false
