@@ -13,20 +13,6 @@ Cabal-Version:       >= 1.10
 Build-Type:          Simple
 
 Extra-Source-Files:
-  cbits/include/asio.cpp
-  cbits/include/asio.h
-  cbits/include/asiodrivers.cpp
-  cbits/include/asiodrivers.h
-  cbits/include/asiodrvr.h
-  cbits/include/asiolist.cpp
-  cbits/include/asiolist.h
-  cbits/include/asiosys.h
-  cbits/include/dsound.h
-  cbits/include/ginclude.h
-  cbits/include/iasiodrv.h
-  cbits/include/iasiothiscallresolver.cpp
-  cbits/include/iasiothiscallresolver.h
-  cbits/include/soundcard.h
   cbits/proAudio.cpp
   cbits/proAudio.h
   cbits/proAudioSdl.cpp
@@ -66,7 +52,7 @@ Library
                         cbits/proteaaudio_binding.cpp
                         cbits/stb_vorbis.c
 
-  Include-Dirs:         cbits cbits/include
+  Include-Dirs:         cbits
 
   CC-Options:           "-DPROTEAAUDIO_SDL"
 
