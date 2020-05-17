@@ -5,6 +5,10 @@
 #include <cstring>
 #include <cstdlib>
 
+#ifdef __RTAUDIO_DUMMY__
+# error "No suitable audio backend has found for RtAudio! Install the dev package with headers for the system's audio library and make sure it is in the include path!"
+#endif
+
 using namespace std;
 
 struct _AudioTrack {
