@@ -43,6 +43,7 @@ Extra-Source-Files:
 
   README.md
   CHANGELOG.md
+  stack.yaml
 
 Flag example
   Description: Build with example
@@ -69,6 +70,8 @@ Library
                         cbits/stb_vorbis.c
 
   Include-Dirs:         cbits cbits/include
+
+  CC-Options:           "-DPROTEAAUDIO_RT"
 
   if os(windows)
     CC-Options:         "-D__WINDOWS_DS__"

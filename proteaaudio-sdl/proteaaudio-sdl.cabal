@@ -41,6 +41,7 @@ Extra-Source-Files:
 
   README.md
   CHANGELOG.md
+  stack.yaml
 
 Flag example
   Description: Build with example
@@ -67,14 +68,16 @@ Library
 
   Include-Dirs:         cbits cbits/include
 
+  CC-Options:           "-DPROTEAAUDIO_SDL"
+
   Includes:             SDL.h
-    
-  Extra-Libraries:      SDL2
+
+  Extra-Libraries:      SDL2 stdc++
 
   pkgconfig-depends:    sdl2 >= 2.0.4
 
 
-executable proteaaudio-play
+executable proteaaudio-play-sdl
   if flag(example)
     Buildable: True
   else

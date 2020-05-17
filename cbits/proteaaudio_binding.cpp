@@ -1,7 +1,24 @@
-#include "proteaaudio_binding.h"
-#include "proAudioRt.h"
 #include <cstring>
 #include <cstdlib>
+#include "proteaaudio_binding.h"
+
+// check if either PROTEAAUDIO_SDL or PROTEAAUDIO_RT is set
+#if defined PROTEAAUDIO_SDL && defined PROTEAAUDIO_RT
+#error "both PROTEAAUDIO_SDL and PROTEAAUDIO_RT is defined"
+#endif
+
+#if !defined PROTEAAUDIO_SDL && !defined PROTEAAUDIO_RT
+#error "neither PROTEAAUDIO_SDL and PROTEAAUDIO_RT is defined"
+#endif
+
+// import backend api
+#ifdef PROTEAAUDIO_RT
+#include "proAudioRt.h"
+#endif
+
+#ifdef PROTEAAUDIO_SDL
+#include "proAudioSdl.h"
+#endif
 
 using namespace std;
 
@@ -56,7 +73,12 @@ static AudioSample* loadOggFromMemory(unsigned char * file_data_ptr, size_t file
 
 // generic
 int initAudio(int nTracks, int frequency, int chunkSize) {
+#ifdef PROTEAAUDIO_SDL
+    DeviceAudio* pAudio = DeviceAudioSdl::create(nTracks, frequency, chunkSize);
+#endif
+#ifdef PROTEAAUDIO_RT
     DeviceAudio* pAudio = DeviceAudioRt::create(nTracks, frequency, chunkSize);
+#endif
     return pAudio != 0;
 }
 
