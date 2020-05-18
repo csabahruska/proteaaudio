@@ -79,6 +79,7 @@ Library
   if os(linux)
     CC-Options:         "-D__LINUX_PULSE__"
     Extra-Libraries:    stdc++ pthread pulse-simple pulse
+    pkgconfig-depends:  libpulse-simple, libpulse
   if os(darwin)
     CC-Options:         "-D__MACOSX_CORE__"
     Extra-Libraries:    stdc++ pthread
