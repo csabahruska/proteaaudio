@@ -75,7 +75,7 @@ protected:
     SDL_AudioSpec m_spec;
     /// stores loaded sound samples
     std::map<unsigned int, _AudioTrack> mm_sample;
-    /// stores maximum sample id
+    /// stores last used unique sample id
     unsigned int m_sampleCounter;
     /// stores whether obtained audio format corresponds to expectations
     bool m_isDesiredFormat;

@@ -215,7 +215,9 @@ bool DeviceAudioSdl::sampleDestroy(unsigned int sample) {
     SDL_UnlockAudio();
 	// cleanup:
 	delete iter->second.data;
+    /* NB change semantics of m_sampleCounter to generate unique values per _AudioTrack stored in map mm_sample
 	if(iter->first==m_sampleCounter) --m_sampleCounter;
+    */
 	mm_sample.erase(iter);
 	return true;
 }

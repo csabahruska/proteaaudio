@@ -72,7 +72,7 @@ protected:
 
 	/// stores loaded sound samples
     std::map<unsigned int, AudioSample*> mm_sample;
-    /// stores maximum sample id
+    /// stores last used unique sample id
     unsigned int m_sampleCounter;
 
     /// stores sounds to be mixed

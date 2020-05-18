@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 #ifdef __RTAUDIO_DUMMY__
-# error "No suitable audio backend has found for RtAudio! Install the dev package with headers for the system's audio library and make sure it is in the include path!"
+#error "No suitable audio backend has found for RtAudio! Install the dev package with headers for the system's audio library and make sure it is in the include path!"
 #endif
 
 using namespace std;
@@ -96,7 +96,9 @@ bool DeviceAudioRt::sampleDestroy(unsigned int sample) {
 		ma_sound[i].isPlaying=false;
 	// cleanup:
 	delete iter->second;
+    /* NB change semantics of m_sampleCounter to generate unique values per AudioSample* stored in map mm_sample
 	if(iter->first==m_sampleCounter) --m_sampleCounter;
+    */
 	mm_sample.erase(iter);
 	return true;
 }
