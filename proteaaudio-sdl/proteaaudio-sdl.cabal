@@ -47,17 +47,16 @@ Library
   Exposed-Modules:      Sound.ProteaAudio.SDL
   Hs-Source-Dirs:       .
 
-  CXX-Sources:          cbits/proAudio.cpp
+  C-Sources:            cbits/proAudio.cpp
                         cbits/proAudioSdl.cpp
                         cbits/proteaaudio_binding.cpp
-  C-Sources:            cbits/stb_vorbis.c
+                        cbits/stb_vorbis.c
 
   Include-Dirs:         cbits
 
   CC-Options:           "-DPROTEAAUDIO_SDL"
-  CXX-Options:          "-DPROTEAAUDIO_SDL"
 
-  Includes:             SDL.h
+  Includes:             SDL_audio.h
 
   Extra-Libraries:      SDL2 stdc++
 
