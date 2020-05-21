@@ -60,7 +60,7 @@ newtype Sound = Sound{ fromSound :: {#type sound_t#} }
 
 -- | Initializes the audio system.
 {#fun initAudio
-    { `Int' -- ^ the maximum number of sounds that are played parallely. Computation time is linearly correlated to this factor.
+    { `Int' -- ^ the maximum number of sounds that are played parallely, at most 1024. Computation time is linearly correlated to this factor.
     , `Int' -- ^ sample frequency of the playback in Hz. 22050 corresponds to FM radio 44100 is CD quality. Computation time is linearly correlated to this factor.
     , `Int' -- ^ the number of bytes that are sent to the sound card at once. Low numbers lead to smaller latencies but need more computation time (thread switches). If a too small number is chosen, the sounds might not be played continuously. The default value 512 guarantees a good latency below 40 ms at 22050 Hz sample frequency.
     } -> `Bool' -- ^ returns True on success

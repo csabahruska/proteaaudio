@@ -31,6 +31,8 @@ struct _AudioTrack {
     bool isLoop;
     /// stores whether sample is currently playing
     bool isPlaying;
+    /// unique id for this sound
+    unsigned int uniqueId;
 };
 
 DeviceAudio* DeviceAudioRt::create(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) {
@@ -42,7 +44,7 @@ DeviceAudio* DeviceAudioRt::create(unsigned int nTracks, unsigned int frequency,
     return s_instance;
 }
 
-DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) : DeviceAudio() {
+DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) : DeviceAudio(), m_uniqueCounter(0) {
 	if ( m_dac.getDeviceCount() < 1 ) {
 		fprintf(stderr,"DeviceAudioRt ERROR: No audio devices found!\n");
 		return;
@@ -83,8 +85,8 @@ unsigned int DeviceAudioRt::sampleFromMemory(const AudioSample & sample, float v
 	AudioSample * pSample = new AudioSample(sample);
 	if(volume!=1.0f) pSample->volume(volume);
 	pSample->bitsPerSample(16);
-    mm_sample.insert(make_pair(++m_sampleCounter,pSample));
-    return m_sampleCounter;
+    mm_sample.insert(make_pair(++m_uniqueCounter,pSample));
+    return m_uniqueCounter;
 }
 
 bool DeviceAudioRt::sampleDestroy(unsigned int sample) {
@@ -96,9 +98,6 @@ bool DeviceAudioRt::sampleDestroy(unsigned int sample) {
 		ma_sound[i].isPlaying=false;
 	// cleanup:
 	delete iter->second;
-    /* NB change semantics of m_sampleCounter to generate unique values per AudioSample* stored in map mm_sample
-	if(iter->first==m_sampleCounter) --m_sampleCounter;
-    */
 	mm_sample.erase(iter);
 	return true;
 }
@@ -120,6 +119,7 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
+    unsigned int unique = ++m_uniqueCounter << SOUND_UNIQUE_LSB;
 	unsigned int sampleRate = iter->second->sampleRate();
 	if(sampleRate!=m_freqOut) pitch*=(float)sampleRate/(float)m_freqOut;
 	
@@ -133,18 +133,20 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
-    return i+1;
+    ma_sound[i].uniqueId=unique>>SOUND_UNIQUE_LSB;
+    return (i | unique);
 }
 
 unsigned int DeviceAudioRt::soundLoop(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch ) {
     unsigned int ret=soundPlay(sample,volumeL,volumeR,disparity, pitch);
-    if(ret) ma_sound[ret-1].isLoop=true;
+    if(ret) ma_sound[ret & SOUND_UNIQUE_BITMAP].isLoop=true;
     return ret;
 }
 
-bool DeviceAudioRt::soundUpdate(unsigned int sound, float volumeL, float volumeR, float disparity, float pitch ) {
-    if(!sound || (sound>m_nSound) || !ma_sound[sound-1].isPlaying) return false;
-    ma_sound[--sound].volL=volumeL;
+bool DeviceAudioRt::soundUpdate(unsigned int sound_, float volumeL, float volumeR, float disparity, float pitch ) {
+    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+    ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
     ma_sound[sound].disparity=disparity;
 	unsigned int sampleRate = ma_sound[sound].sample->sampleRate();
@@ -153,9 +155,10 @@ bool DeviceAudioRt::soundUpdate(unsigned int sound, float volumeL, float volumeR
     return true;
 }
 
-bool DeviceAudioRt::soundStop(unsigned int sound) {
-    if(!sound||(sound>m_nSound)||!ma_sound[sound-1].isPlaying) return false;
-    ma_sound[sound-1].isPlaying=false;
+bool DeviceAudioRt::soundStop(unsigned int sound_) {
+    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+    ma_sound[sound].isPlaying=false;
     return true;
 }
 

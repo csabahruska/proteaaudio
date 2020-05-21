@@ -73,6 +73,8 @@ static AudioSample* loadOggFromMemory(unsigned char * file_data_ptr, size_t file
 
 // generic
 int initAudio(int nTracks, int frequency, int chunkSize) {
+    if (nTracks < 1 || nTracks > (1<<SOUND_UNIQUE_LSB) )
+        return 0;
 #ifdef PROTEAAUDIO_SDL
     DeviceAudio* pAudio = DeviceAudioSdl::create(nTracks, frequency, chunkSize);
 #endif

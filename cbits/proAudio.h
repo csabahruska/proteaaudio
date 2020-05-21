@@ -1,6 +1,9 @@
 #ifndef _PRO_AUDIO
 #define _PRO_AUDIO
 
+#define SOUND_UNIQUE_BITMAP 1023        // bitmap AND handle is the handle's audio track no.
+#define SOUND_UNIQUE_LSB    10          // first bit where the unique part of a handle starts
+
 #include <string>
 #include <map>
 

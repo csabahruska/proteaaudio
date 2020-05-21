@@ -1,5 +1,5 @@
 #include "proAudio.h"
-#include <RtAudio.h>
+#include "RtAudio.h"
 #include <map>
 
 /** @file proAudioRt.h
@@ -72,8 +72,8 @@ protected:
 
 	/// stores loaded sound samples
     std::map<unsigned int, AudioSample*> mm_sample;
-    /// stores last used unique sample id
-    unsigned int m_sampleCounter;
+    /// counter for unique sample and sound id's
+    unsigned int m_uniqueCounter;
 
     /// stores sounds to be mixed
     _AudioTrack * ma_sound;

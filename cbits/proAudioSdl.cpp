@@ -35,6 +35,8 @@ public:
     bool isLoop;
     /// stores whether sample is currently playing
     bool isPlaying;
+    /// unique id for this sound
+    unsigned int uniqueId;
 };
 
 DeviceAudio* DeviceAudioSdl::create(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) {
@@ -46,7 +48,7 @@ DeviceAudio* DeviceAudioSdl::create(unsigned int nTracks, unsigned int frequency
     return s_instance;
 }
 
-DeviceAudioSdl::DeviceAudioSdl(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) : DeviceAudio(), m_sampleCounter(0) {
+DeviceAudioSdl::DeviceAudioSdl(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) : DeviceAudio(), m_uniqueCounter(0) {
     // initialize SDL sound system:
 	if(!SDL_WasInit(SDL_INIT_AUDIO)&&(SDL_InitSubSystem(SDL_INIT_AUDIO)<0)) {
 		fprintf(stderr, "DeviceAudioSdl ERROR: cannot initialize SDL audio subsystem.\n");
@@ -200,8 +202,8 @@ unsigned int DeviceAudioSdl::sampleFromMemory(const AudioSample & sample, float 
     if((volume!=1.0f)&&m_isDesiredFormat)
 		adjustVolume((signed short *)track.data, track.dlen/2, volume);
 
-    mm_sample.insert(make_pair(++m_sampleCounter,track));
-    return m_sampleCounter;
+    mm_sample.insert(make_pair(++m_uniqueCounter,track));
+    return m_uniqueCounter;
 }
 
 bool DeviceAudioSdl::sampleDestroy(unsigned int sample) {
@@ -215,9 +217,6 @@ bool DeviceAudioSdl::sampleDestroy(unsigned int sample) {
     SDL_UnlockAudio();
 	// cleanup:
 	delete iter->second.data;
-    /* NB change semantics of m_sampleCounter to generate unique values per _AudioTrack stored in map mm_sample
-	if(iter->first==m_sampleCounter) --m_sampleCounter;
-    */
 	mm_sample.erase(iter);
 	return true;
 }
@@ -232,6 +231,8 @@ unsigned int DeviceAudioSdl::soundPlay(unsigned int sample, float volumeL, float
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
+    unsigned int unique = ++m_uniqueCounter << SOUND_UNIQUE_LSB;
+
     // put the sample data in the slot and play it
     SDL_LockAudio();
     ma_sound[i].data = iter->second.data;
@@ -243,24 +244,26 @@ unsigned int DeviceAudioSdl::soundPlay(unsigned int sample, float volumeL, float
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
+    ma_sound[i].uniqueId=unique>>SOUND_UNIQUE_LSB;
     SDL_UnlockAudio();
-    return i+1;
+    return (i | unique);
 }
 
 unsigned int DeviceAudioSdl::soundLoop(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch) {
     unsigned int ret=soundPlay(sample,volumeL,volumeR,disparity, pitch);
     if(ret) {
         SDL_LockAudio();
-        ma_sound[ret-1].isLoop=true;
+        ma_sound[ret & SOUND_UNIQUE_BITMAP].isLoop=true;
         SDL_UnlockAudio();
     }
     return ret;
 }
 
-bool DeviceAudioSdl::soundUpdate(unsigned int sound, float volumeL, float volumeR, float disparity, float pitch ) {
-    if(!sound || (sound>m_nSound) || !ma_sound[sound-1].isPlaying) return false;
+bool DeviceAudioSdl::soundUpdate(unsigned int sound_, float volumeL, float volumeR, float disparity, float pitch ) {
+    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
     SDL_LockAudio();
-    ma_sound[--sound].volL=volumeL;
+    ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
     ma_sound[sound].disparity=disparity;
     ma_sound[sound].pitch=fabs(pitch);
@@ -268,10 +271,11 @@ bool DeviceAudioSdl::soundUpdate(unsigned int sound, float volumeL, float volume
     return true;
 }
 
-bool DeviceAudioSdl::soundStop(unsigned int sound) {
-    if(!sound||(sound>m_nSound)||!ma_sound[sound-1].isPlaying) return false;
+bool DeviceAudioSdl::soundStop(unsigned int sound_) {
+    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
     SDL_LockAudio();
-    ma_sound[sound-1].isPlaying=false;
+    ma_sound[sound].isPlaying=false;
     SDL_UnlockAudio();
     return true;
 }
