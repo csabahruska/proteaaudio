@@ -231,7 +231,7 @@ uint64_t DeviceAudioSdl::soundPlay(uint64_t sample, float volumeL, float volumeR
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
-    uint64_t unique = ++m_uniqueCounter;
+    uint64_t uniqueHandle = UH_PACK_UNIQUE_HANDLE(++m_uniqueCounter, i);
 
     // put the sample data in the slot and play it
     SDL_LockAudio();
@@ -244,9 +244,9 @@ uint64_t DeviceAudioSdl::soundPlay(uint64_t sample, float volumeL, float volumeR
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
-    ma_sound[i].uniqueId=unique;
+    ma_sound[i].uniqueId=UH_UNPACK_UNIQUE_ID(uniqueHandle);
     SDL_UnlockAudio();
-    return UH_PACK_UNIQUE_HANDLE(unique, i);
+    return uniqueHandle;
 }
 
 uint64_t DeviceAudioSdl::soundLoop(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {

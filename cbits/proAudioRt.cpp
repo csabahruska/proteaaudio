@@ -119,7 +119,7 @@ uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR,
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
-    uint64_t unique = ++m_uniqueCounter;
+    uint64_t uniqueHandle = UH_PACK_UNIQUE_HANDLE(++m_uniqueCounter, i);
     unsigned int sampleRate = iter->second->sampleRate();
     if(sampleRate!=m_freqOut) pitch*=(float)sampleRate/(float)m_freqOut;
 
@@ -133,8 +133,8 @@ uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR,
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
-    ma_sound[i].uniqueId=unique;
-    return UH_PACK_UNIQUE_HANDLE(unique, i);
+    ma_sound[i].uniqueId=UH_UNPACK_UNIQUE_ID(uniqueHandle);
+    return uniqueHandle;
 }
 
 uint64_t DeviceAudioRt::soundLoop(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch ) {
