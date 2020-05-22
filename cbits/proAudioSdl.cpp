@@ -231,7 +231,7 @@ unsigned int DeviceAudioSdl::soundPlay(unsigned int sample, float volumeL, float
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
-    unsigned int unique = ++m_uniqueCounter << SOUND_UNIQUE_LSB;
+    unsigned int unique = ++m_uniqueCounter;
 
     // put the sample data in the slot and play it
     SDL_LockAudio();
@@ -244,24 +244,24 @@ unsigned int DeviceAudioSdl::soundPlay(unsigned int sample, float volumeL, float
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
-    ma_sound[i].uniqueId=unique>>SOUND_UNIQUE_LSB;
+    ma_sound[i].uniqueId=unique;
     SDL_UnlockAudio();
-    return (i | unique);
+    return UH_PACK_UNIQUE_HANDLE(unique, i);
 }
 
 unsigned int DeviceAudioSdl::soundLoop(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch) {
-    unsigned int ret=soundPlay(sample,volumeL,volumeR,disparity, pitch);
-    if(ret) {
+    unsigned int uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
+    if(uniqueHandle) {
         SDL_LockAudio();
-        ma_sound[ret & SOUND_UNIQUE_BITMAP].isLoop=true;
+        ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
         SDL_UnlockAudio();
     }
-    return ret;
+    return uniqueHandle;
 }
 
-bool DeviceAudioSdl::soundUpdate(unsigned int sound_, float volumeL, float volumeR, float disparity, float pitch ) {
-    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
-    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+bool DeviceAudioSdl::soundUpdate(unsigned int uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     SDL_LockAudio();
     ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
@@ -271,9 +271,9 @@ bool DeviceAudioSdl::soundUpdate(unsigned int sound_, float volumeL, float volum
     return true;
 }
 
-bool DeviceAudioSdl::soundStop(unsigned int sound_) {
-    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
-    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+bool DeviceAudioSdl::soundStop(unsigned int uniqueHandle) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     SDL_LockAudio();
     ma_sound[sound].isPlaying=false;
     SDL_UnlockAudio();

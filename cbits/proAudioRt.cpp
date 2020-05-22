@@ -119,7 +119,7 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
-    unsigned int unique = ++m_uniqueCounter << SOUND_UNIQUE_LSB;
+    unsigned int unique = ++m_uniqueCounter;
 	unsigned int sampleRate = iter->second->sampleRate();
 	if(sampleRate!=m_freqOut) pitch*=(float)sampleRate/(float)m_freqOut;
 	
@@ -133,19 +133,19 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
-    ma_sound[i].uniqueId=unique>>SOUND_UNIQUE_LSB;
-    return (i | unique);
+    ma_sound[i].uniqueId=unique;
+    return UH_PACK_UNIQUE_HANDLE(unique, i);
 }
 
 unsigned int DeviceAudioRt::soundLoop(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch ) {
-    unsigned int ret=soundPlay(sample,volumeL,volumeR,disparity, pitch);
-    if(ret) ma_sound[ret & SOUND_UNIQUE_BITMAP].isLoop=true;
-    return ret;
+    unsigned int uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
+    if(uniqueHandle) ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
+    return uniqueHandle;
 }
 
-bool DeviceAudioRt::soundUpdate(unsigned int sound_, float volumeL, float volumeR, float disparity, float pitch ) {
-    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
-    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+bool DeviceAudioRt::soundUpdate(unsigned int uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
     ma_sound[sound].disparity=disparity;
@@ -155,9 +155,9 @@ bool DeviceAudioRt::soundUpdate(unsigned int sound_, float volumeL, float volume
     return true;
 }
 
-bool DeviceAudioRt::soundStop(unsigned int sound_) {
-    unsigned int sound = sound_ & SOUND_UNIQUE_BITMAP;
-    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=(sound_ >> SOUND_UNIQUE_LSB)) return false;
+bool DeviceAudioRt::soundStop(unsigned int uniqueHandle) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     ma_sound[sound].isPlaying=false;
     return true;
 }

@@ -1,8 +1,18 @@
 #ifndef _PRO_AUDIO
 #define _PRO_AUDIO
 
-#define SOUND_UNIQUE_BITMAP 1023        // bitmap AND handle is the handle's audio track no.
-#define SOUND_UNIQUE_LSB    10          // first bit where the unique part of a handle starts
+/*
+  Unique Handle (uint64) =
+    UniqueId (HI bits: Global Monotonic Counter) + Payload  (LO bits: i.e. sample index)
+*/
+
+#define UH_PAYLOAD_BIT_WIDTH            10
+#define UH_PAYLOAD_MASK                 ((1 << UH_PAYLOAD_BIT_WIDTH) - 1)
+
+// Unique Handle API
+#define UH_PACK_UNIQUE_HANDLE(uid, data)   (uid << UH_PAYLOAD_BIT_WIDTH | (data & UH_PAYLOAD_MASK))
+#define UH_UNPACK_UNIQUE_ID(uh)            (uh >> UH_PAYLOAD_BIT_WIDTH)
+#define UH_UNPACK_PAYLOAD(uh)              (uh & UH_PAYLOAD_MASK)
 
 #include <string>
 #include <map>
