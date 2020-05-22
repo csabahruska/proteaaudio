@@ -26,9 +26,9 @@ public:
     static DeviceAudio* create(unsigned int nTracks=8, unsigned int frequency=22050, unsigned int chunkSize=1024);
 
     /// converts a sound sample to internal audio format, returns handle
-    virtual unsigned int sampleFromMemory(const AudioSample & sample, float volume=1.0f);
+    virtual uint64_t sampleFromMemory(const AudioSample & sample, float volume=1.0f);
     /// deletes a previously created sound sample resource identified by its handle
-    virtual bool sampleDestroy(unsigned int sample);
+    virtual bool sampleDestroy(uint64_t sample);
     /// allows read access to a sample identified by its handle
     virtual const AudioSample* sample(unsigned int handle) const;
 
@@ -39,7 +39,7 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return a handle to the currently played sound or 0 in case of error */
-    virtual unsigned int soundPlay(unsigned int sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
+    virtual uint64_t soundPlay(uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
     /** plays a specified sample continuously and sets its parameters
      \param sample a sample handle returned by a previous load() call
      \param volumeL (optional) left volume
@@ -47,7 +47,7 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return a handle to the currently played sound or 0 in case of error */
-    virtual unsigned int soundLoop(unsigned int sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
+    virtual uint64_t soundLoop(uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
     /// updates parameters of a specified sound
      /** \param sound  handle of a currently active sound
      \param volumeL left volume
@@ -55,9 +55,9 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return true in case the parameters have been updated successfully */
-    virtual bool soundUpdate(unsigned int sound, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f );
+    virtual bool soundUpdate(uint64_t sound, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f );
     /// stops a specified sound immediately
-    virtual bool soundStop(unsigned int sound);
+    virtual bool soundStop(uint64_t sound);
     /// stops all sounds immediately
     virtual void soundStop();
     /// returns number of currently active sounds
@@ -71,9 +71,9 @@ protected:
     int mixOutputFloat(signed short *outputBuffer, unsigned int nFrames);
 
     /// stores loaded sound samples
-    std::map<unsigned int, AudioSample*> mm_sample;
+    std::map<uint64_t, AudioSample*> mm_sample;
     /// counter for unique sample and sound id's
-    unsigned int m_uniqueCounter;
+    uint64_t m_uniqueCounter;
 
     /// stores sounds to be mixed
     _AudioTrack * ma_sound;

@@ -17,6 +17,7 @@
 #include <string>
 #include <map>
 
+
 /** @file proAudio.h
  \brief Public interface of proteaAudio
 
@@ -121,11 +122,11 @@ public:
     bool loaderAvailable(const std::string & suffix) const;
 
     /// loads a sound sample from file, optionally adjusts volume, returns handle
-    virtual unsigned int sampleFromFile(const std::string & filename, float volume=1.0f);
+    virtual uint64_t sampleFromFile(const std::string & filename, float volume=1.0f);
     /// converts a sound sample to internal audio format, returns handle
-    virtual unsigned int sampleFromMemory(const AudioSample & sample, float volume=1.0f)=0;
+    virtual uint64_t sampleFromMemory(const AudioSample & sample, float volume=1.0f)=0;
     /// deletes a previously created sound sample resource identified by its handle
-    virtual bool sampleDestroy(unsigned int sample)=0;
+    virtual bool sampleDestroy(uint64_t sample)=0;
     /// allows read access to a sample identified by its handle
     virtual const AudioSample* sample(unsigned int handle) const { return 0; }
 
@@ -136,7 +137,7 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return a handle to the currently played sound or -1 in case of error */
-    virtual unsigned int soundPlay(unsigned int sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f )=0;
+    virtual uint64_t soundPlay(uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f )=0;
     /// plays a specified sound sample continuously and sets its parameters
      /** \param sample  handle of a previously loaded sample
      \param volumeL (optional) left volume
@@ -144,7 +145,7 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return a handle to the currently played sound or -1 in case of error */
-    virtual unsigned int soundLoop(unsigned int sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f )=0;
+    virtual uint64_t soundLoop(uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f )=0;
     /// updates parameters of a specified sound
      /** \param sound  handle of a currently active sound
      \param volumeL left volume
@@ -152,9 +153,9 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return true in case the parameters have been updated successfully */
-    virtual bool soundUpdate(unsigned int sound, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f )=0;
+    virtual bool soundUpdate(uint64_t sound, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f )=0;
     /// stops a specified sound immediately
-    virtual bool soundStop(unsigned int sound)=0;
+    virtual bool soundStop(uint64_t sound)=0;
     /// stops all sounds immediately
     virtual void soundStop()=0;
     /// returns number of currently active sounds

@@ -32,7 +32,7 @@ struct _AudioTrack {
     /// stores whether sample is currently playing
     bool isPlaying;
     /// unique id for this sound
-    unsigned int uniqueId;
+    uint64_t uniqueId;
 };
 
 DeviceAudio* DeviceAudioRt::create(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) {
@@ -76,12 +76,12 @@ DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsig
 DeviceAudioRt::~DeviceAudioRt() {
     if(m_dac.isStreamOpen()) m_dac.closeStream();
     delete [] ma_sound;
-    for( map<unsigned int,AudioSample*>::iterator it=mm_sample.begin(); it!=mm_sample.end(); ++it)
+    for( map<uint64_t,AudioSample*>::iterator it=mm_sample.begin(); it!=mm_sample.end(); ++it)
         delete it->second;
     mm_sample.clear();
 }
 
-unsigned int DeviceAudioRt::sampleFromMemory(const AudioSample & sample, float volume) {
+uint64_t DeviceAudioRt::sampleFromMemory(const AudioSample & sample, float volume) {
     AudioSample * pSample = new AudioSample(sample);
     if(volume!=1.0f) pSample->volume(volume);
     pSample->bitsPerSample(16);
@@ -89,9 +89,9 @@ unsigned int DeviceAudioRt::sampleFromMemory(const AudioSample & sample, float v
     return m_uniqueCounter;
 }
 
-bool DeviceAudioRt::sampleDestroy(unsigned int sample) {
+bool DeviceAudioRt::sampleDestroy(uint64_t sample) {
     // look for sample:
-    map<unsigned int,AudioSample*>::iterator iter=mm_sample.find(sample);
+    map<uint64_t,AudioSample*>::iterator iter=mm_sample.find(sample);
     if( iter == mm_sample.end() ) return false;
     // stop currently playing sounds referring to this sample:
     for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].sample == iter->second)
@@ -103,15 +103,15 @@ bool DeviceAudioRt::sampleDestroy(unsigned int sample) {
 }
 
 const AudioSample* DeviceAudioRt::sample(unsigned int handle) const {
-    map<unsigned int,AudioSample*>::const_iterator it=mm_sample.find(handle);
+    map<uint64_t,AudioSample*>::const_iterator it=mm_sample.find(handle);
     if( it == mm_sample.end() ) return 0;
     return it->second;
 }
 
 
-unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch ) {
+uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch ) {
     // look for sample:
-    map<unsigned int,AudioSample*>::iterator iter=mm_sample.find(sample);
+    map<uint64_t,AudioSample*>::iterator iter=mm_sample.find(sample);
     if( iter == mm_sample.end() ) return 0; // no sample found
     // look for an empty (or finished) sound track
     unsigned int i;
@@ -119,7 +119,7 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
         if (!ma_sound[i].isPlaying) break;
     if ( i == m_nSound ) return 0; // no empty slot found
 
-    unsigned int unique = ++m_uniqueCounter;
+    uint64_t unique = ++m_uniqueCounter;
     unsigned int sampleRate = iter->second->sampleRate();
     if(sampleRate!=m_freqOut) pitch*=(float)sampleRate/(float)m_freqOut;
 
@@ -137,13 +137,13 @@ unsigned int DeviceAudioRt::soundPlay(unsigned int sample, float volumeL, float 
     return UH_PACK_UNIQUE_HANDLE(unique, i);
 }
 
-unsigned int DeviceAudioRt::soundLoop(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch ) {
-    unsigned int uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
+uint64_t DeviceAudioRt::soundLoop(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch ) {
+    uint64_t uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
     if(uniqueHandle) ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
     return uniqueHandle;
 }
 
-bool DeviceAudioRt::soundUpdate(unsigned int uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
+bool DeviceAudioRt::soundUpdate(uint64_t uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
     unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
     if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     ma_sound[sound].volL=volumeL;
@@ -155,7 +155,7 @@ bool DeviceAudioRt::soundUpdate(unsigned int uniqueHandle, float volumeL, float 
     return true;
 }
 
-bool DeviceAudioRt::soundStop(unsigned int uniqueHandle) {
+bool DeviceAudioRt::soundStop(uint64_t uniqueHandle) {
     unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
     if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     ma_sound[sound].isPlaying=false;

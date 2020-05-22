@@ -2,8 +2,10 @@
 extern "C" {
 #endif
 
-typedef int sample_t;
-typedef int sound_t;
+#include <stdint.h>
+
+typedef uint64_t sample_t;
+typedef uint64_t sound_t;
 
 int initAudio(int nTracks, int frequency, int chunkSize);
 void finishAudio();
