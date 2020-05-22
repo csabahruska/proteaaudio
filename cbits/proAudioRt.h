@@ -30,7 +30,7 @@ public:
     /// deletes a previously created sound sample resource identified by its handle
     virtual bool sampleDestroy(uint64_t sample);
     /// allows read access to a sample identified by its handle
-    virtual const AudioSample* sample(unsigned int handle) const;
+    virtual const AudioSample* sample(uint64_t handle) const;
 
     /// plays a specified sample once and sets its parameters
     /** \param sample a sample handle returned by a previous load() call

@@ -1,6 +1,7 @@
 #ifndef _PRO_AUDIO
 #define _PRO_AUDIO
 
+#include <cstdint>
 /*
   Unique Handle (uint64) =
     UniqueId (HI bits: Global Monotonic Counter) + Payload  (LO bits: i.e. sample index)
@@ -10,13 +11,20 @@
 #define UH_PAYLOAD_MASK                 ((1 << UH_PAYLOAD_BIT_WIDTH) - 1)
 
 // Unique Handle API
-#define UH_PACK_UNIQUE_HANDLE(uid, data)   (uid << UH_PAYLOAD_BIT_WIDTH | (data & UH_PAYLOAD_MASK))
-#define UH_UNPACK_UNIQUE_ID(uh)            (uh >> UH_PAYLOAD_BIT_WIDTH)
-#define UH_UNPACK_PAYLOAD(uh)              (uh & UH_PAYLOAD_MASK)
+inline uint64_t UH_PACK_UNIQUE_HANDLE(uint64_t uid, uint16_t data) {
+  return (uid << UH_PAYLOAD_BIT_WIDTH) | (data & UH_PAYLOAD_MASK);
+}
+
+inline uint64_t UH_UNPACK_UNIQUE_ID(uint64_t uh) {
+  return uh >> UH_PAYLOAD_BIT_WIDTH;
+}
+
+inline uint16_t UH_UNPACK_PAYLOAD(uint64_t uh) {
+  return uh & UH_PAYLOAD_MASK;
+}
 
 #include <string>
 #include <map>
-
 
 /** @file proAudio.h
  \brief Public interface of proteaAudio
@@ -128,7 +136,7 @@ public:
     /// deletes a previously created sound sample resource identified by its handle
     virtual bool sampleDestroy(uint64_t sample)=0;
     /// allows read access to a sample identified by its handle
-    virtual const AudioSample* sample(unsigned int handle) const { return 0; }
+    virtual const AudioSample* sample(uint64_t handle) const { return 0; }
 
     /// plays a specified sound sample once and sets its parameters
     /** \param sample  handle of a previously loaded sample

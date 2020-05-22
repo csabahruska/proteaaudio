@@ -102,7 +102,7 @@ bool DeviceAudioRt::sampleDestroy(uint64_t sample) {
     return true;
 }
 
-const AudioSample* DeviceAudioRt::sample(unsigned int handle) const {
+const AudioSample* DeviceAudioRt::sample(uint64_t handle) const {
     map<uint64_t,AudioSample*>::const_iterator it=mm_sample.find(handle);
     if( it == mm_sample.end() ) return 0;
     return it->second;
