@@ -17,8 +17,8 @@ ProteaAudio is a stereo audio mixer/playback library for
 * Windows /(DirectSound)/
 -}
 module Sound.ProteaAudio (
-#else "I can't decide which binding to compile; please define either PROTEAAUDIO_SDL or PROTEAAUDIO_RT"
-#error  
+#else
+#error "I can't decide which binding to compile; please define either PROTEAAUDIO_SDL or PROTEAAUDIO_RT"
 #endif
     -- * Sample
     Sample(),
