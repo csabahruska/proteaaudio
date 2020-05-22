@@ -20,6 +20,8 @@ int soundActive();
 void soundStopAll();
 sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch);
 sound_t soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch);
+sound_t soundPlayOn(unsigned int track, sample_t sample, float volumeL, float volumeR, float disparity, float pitch);
+sound_t soundLoopOn(unsigned int track, sample_t sample, float volumeL, float volumeR, float disparity, float pitch);
 int soundUpdate(sound_t sound, float volumeL, float volumeR, float disparity, float pitch);
 int soundStop(sound_t sound);
 #ifdef __cplusplus

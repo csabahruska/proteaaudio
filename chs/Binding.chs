@@ -44,6 +44,8 @@ module Sound.ProteaAudio (
     -- * Sample Playback
     soundLoop,
     soundPlay,
+    soundLoopOn,
+    soundPlayOn,
     soundUpdate,
     soundStop
  ) where
@@ -151,7 +153,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
 -- | Stops all sounds immediately.
 {#fun soundStopAll {} -> `()'#}
 
--- | Plays a specified sound sample continuously and sets its parameters.
+-- | Plays a specified sound sample continuously any free channel and sets its parameters.
 {#fun soundLoop
   { fromSample `Sample' -- ^ handle of a previously loaded sample
   , `Float' -- ^ left volume
@@ -161,7 +163,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   } -> `Sound' Sound
 #}
 
--- | Plays a specified sound sample once and sets its parameters.
+-- | Plays a specified sound sample once any free channel and sets its parameters.
 {#fun soundPlay
   { fromSample `Sample' -- ^ handle of a previously loaded sample
   , `Float' -- ^ left volume
@@ -171,9 +173,31 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   } -> `Sound' Sound
 #}
 
+-- | Plays a specified sound sample once on a specific channel and sets its parameters.
+{#fun soundPlayOn
+  { `Int' -- ^ number of the channel to use for playback with the first channel starting at 0
+  , fromSample `Sample' -- ^ handle of a previously loaded sample
+  , `Float' -- ^ left volume
+  , `Float' -- ^ right volume
+  , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right
+  , `Float' -- ^ pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample
+  } -> `Sound' Sound
+#}
+
+-- | Plays a specified sound sample continuously on a specific channel and sets its parameters.
+{#fun soundLoopOn
+  { `Int' -- ^ number of the channel to use for playback with the first channel starting at 0
+  , fromSample `Sample' -- ^ handle of a previously loaded sample
+  , `Float' -- ^ left volume
+  , `Float' -- ^ right volume
+  , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right
+  , `Float' -- ^ pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample
+  } -> `Sound' Sound
+#}
+
 -- | Updates parameters of a specified sound.
 {#fun soundUpdate
-  { fromSound `Sound' -- ^ handle of a currently active sound
+  { fromSound `Sound' -- ^ handle of a currently active sound (if sound has stopped, this is a no-op)
   , `Float' -- ^ left volume
   , `Float' -- ^ right volume
   , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right

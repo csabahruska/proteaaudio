@@ -108,16 +108,20 @@ const AudioSample* DeviceAudioRt::sample(uint64_t handle) const {
     return it->second;
 }
 
-
-uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch ) {
-    // look for sample:
-    map<uint64_t,AudioSample*>::iterator iter=mm_sample.find(sample);
-    if( iter == mm_sample.end() ) return 0; // no sample found
+uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     // look for an empty (or finished) sound track
     unsigned int i;
     for ( i=0; i<m_nSound; ++i )
         if (!ma_sound[i].isPlaying) break;
-    if ( i == m_nSound ) return 0; // no empty slot found
+    return soundPlayOn(i,sample,volumeL,volumeR,disparity,pitch);
+}
+
+uint64_t DeviceAudioRt::soundPlayOn(unsigned int i, uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    if ( i >= m_nSound ) return 0; // invalid, or no empty slot found
+
+    // look for sample:
+    map<uint64_t,AudioSample*>::iterator iter=mm_sample.find(sample);
+    if( iter == mm_sample.end() ) return 0; // no sample found
 
     uint64_t uniqueHandle = UH_PACK_UNIQUE_HANDLE(++m_uniqueCounter, i);
     unsigned int sampleRate = iter->second->sampleRate();
@@ -139,6 +143,12 @@ uint64_t DeviceAudioRt::soundPlay(uint64_t sample, float volumeL, float volumeR,
 
 uint64_t DeviceAudioRt::soundLoop(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch ) {
     uint64_t uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
+    if(uniqueHandle) ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
+    return uniqueHandle;
+}
+
+uint64_t DeviceAudioRt::soundLoopOn(unsigned int i, uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    uint64_t uniqueHandle=soundPlayOn(i,sample,volumeL,volumeR,disparity, pitch);
     if(uniqueHandle) ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
     return uniqueHandle;
 }

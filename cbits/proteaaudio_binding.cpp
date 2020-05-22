@@ -169,6 +169,18 @@ sound_t soundPlay(sample_t sample, float volumeL, float volumeR, float disparity
     return audio.soundPlay(sample, volumeL, volumeR, disparity, pitch);
 }
 
+sound_t soundLoopOn(unsigned int track, sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    return audio.soundLoopOn(track, sample, volumeL, volumeR, disparity, pitch);    
+}
+
+sound_t soundPlayOn(unsigned int track, sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    return audio.soundPlayOn(track, sample, volumeL, volumeR, disparity, pitch);    
+}
+
 int soundUpdate(sound_t sound, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;

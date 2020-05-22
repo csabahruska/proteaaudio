@@ -48,6 +48,24 @@ public:
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return a handle to the currently played sound or 0 in case of error */
     virtual uint64_t soundLoop(uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
+    /// plays a specified sample once on a specific channel and sets its parameters
+    /** \param i a channel number with the first channel starting at 0 
+     \param sample a sample handle returned by a previous load() call
+     \param volumeL (optional) left volume
+     \param volumeR (optional) right volume
+     \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
+     \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
+     \return a handle to the currently played sound or 0 in case of error */
+    virtual uint64_t soundPlayOn(unsigned int i, uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
+    /// plays a specified sample continuously on a specific channel and sets its parameters
+    /** \param i a channel number with the first channel starting at 0 
+     \param sample a sample handle returned by a previous load() call
+     \param volumeL (optional) left volume
+     \param volumeR (optional) right volume
+     \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
+     \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
+     \return a handle to the currently played sound or 0 in case of error */
+    virtual uint64_t soundLoopOn(unsigned int i, uint64_t sample, float volumeL=1.0f, float volumeR=1.0f, float disparity=0.0f, float pitch=1.0f );
     /// updates parameters of a specified sound
      /** \param sound  handle of a currently active sound
      \param volumeL left volume

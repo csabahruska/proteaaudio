@@ -222,14 +222,19 @@ bool DeviceAudioSdl::sampleDestroy(uint64_t sample) {
 }
 
 uint64_t DeviceAudioSdl::soundPlay(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
-    // look for sample:
-    map<uint64_t,_AudioTrack>::iterator iter=mm_sample.find(sample);
-    if(iter==mm_sample.end()) return 0; // no sample found
     // look for an empty (or finished) sound track
     unsigned int i;
     for ( i=0; i<m_nSound; ++i )
         if (!ma_sound[i].isPlaying) break;
-    if ( i == m_nSound ) return 0; // no empty slot found
+    return soundPlayOn(i,sample,volumeL,volumeR,disparity,pitch);
+}
+
+uint64_t DeviceAudioSdl::soundPlayOn(unsigned int i, uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    if ( i >= m_nSound ) return 0; // invalid, or no empty slot found
+
+    // look for sample:
+    map<uint64_t,_AudioTrack>::iterator iter=mm_sample.find(sample);
+    if(iter==mm_sample.end()) return 0; // no sample found
 
     uint64_t uniqueHandle = UH_PACK_UNIQUE_HANDLE(++m_uniqueCounter, i);
 
@@ -251,6 +256,16 @@ uint64_t DeviceAudioSdl::soundPlay(uint64_t sample, float volumeL, float volumeR
 
 uint64_t DeviceAudioSdl::soundLoop(uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     uint64_t uniqueHandle=soundPlay(sample,volumeL,volumeR,disparity, pitch);
+    if(uniqueHandle) {
+        SDL_LockAudio();
+        ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
+        SDL_UnlockAudio();
+    }
+    return uniqueHandle;
+}
+
+uint64_t DeviceAudioSdl::soundLoopOn(unsigned int i, uint64_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+    uint64_t uniqueHandle=soundPlayOn(i,sample,volumeL,volumeR,disparity, pitch);
     if(uniqueHandle) {
         SDL_LockAudio();
         ma_sound[UH_UNPACK_PAYLOAD(uniqueHandle)].isLoop=true;
