@@ -12,7 +12,7 @@ extern "C" {
  \author  Gerald Franz, www.viremo.de
  \version 2.0
 */
- 
+
 //--- class DeviceAudioSdl -----------------------------------------
 
 /// internal class to manage sample data
@@ -21,7 +21,7 @@ class _AudioTrack;
 /// SDL based stereo audio mixer/playback device
 class DeviceAudioSdl : public DeviceAudio {
 public:
-	///creates audio device
+    ///creates audio device
     /** Use this method instead of a constructor.
      \param nTracks (optional) the maximum number of sounds that are played parallely. Computation time is linearly correlated to this factor.
      \param frequency (optional) sample frequency of the playback in Hz. 22050 corresponds to FM radio 44100 is CD quality. Computation time is linearly correlated to this factor.
@@ -33,8 +33,8 @@ public:
 
     /// converts a sound sample to internal audio format, returns handle
     virtual unsigned int sampleFromMemory(const AudioSample & sample, float volume=1.0f);
-	/// deletes a previously created sound sample resource identified by its handle
-	virtual bool sampleDestroy(unsigned int sample);
+    /// deletes a previously created sound sample resource identified by its handle
+    virtual bool sampleDestroy(unsigned int sample);
 
     /// plays a specified sample once and sets its parameters
     /** \param sample a sample handle returned by a previous load() call
@@ -64,8 +64,8 @@ public:
     virtual bool soundStop(unsigned int sound);
     /// stops all sounds immediately
     virtual void soundStop();
-	/// returns number of currently active sounds
-	virtual unsigned int soundActive() const;
+    /// returns number of currently active sounds
+    virtual unsigned int soundActive() const;
 protected:
     /// constructor. Use the create() method instead
     DeviceAudioSdl(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize);

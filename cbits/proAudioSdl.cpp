@@ -41,19 +41,19 @@ public:
 
 DeviceAudio* DeviceAudioSdl::create(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) {
     if(!s_instance) {
-		DeviceAudioSdl* pAudio = new DeviceAudioSdl(nTracks,frequency,chunkSize);
-		if(!pAudio->m_freqOut) delete pAudio;
-		else s_instance = pAudio;
-	}
+        DeviceAudioSdl* pAudio = new DeviceAudioSdl(nTracks,frequency,chunkSize);
+        if(!pAudio->m_freqOut) delete pAudio;
+        else s_instance = pAudio;
+    }
     return s_instance;
 }
 
 DeviceAudioSdl::DeviceAudioSdl(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) : DeviceAudio(), m_uniqueCounter(0) {
     // initialize SDL sound system:
-	if(!SDL_WasInit(SDL_INIT_AUDIO)&&(SDL_InitSubSystem(SDL_INIT_AUDIO)<0)) {
-		fprintf(stderr, "DeviceAudioSdl ERROR: cannot initialize SDL audio subsystem.\n");
-		return;
-	}
+    if(!SDL_WasInit(SDL_INIT_AUDIO)&&(SDL_InitSubSystem(SDL_INIT_AUDIO)<0)) {
+        fprintf(stderr, "DeviceAudioSdl ERROR: cannot initialize SDL audio subsystem.\n");
+        return;
+    }
 
     // set the audio format:
     SDL_AudioSpec desired;
@@ -81,7 +81,7 @@ DeviceAudioSdl::DeviceAudioSdl(unsigned int nTracks, unsigned int frequency, uns
     ma_sound=new _AudioTrack[m_nSound];
 
     SDL_PauseAudio(0); // start sound
-	m_freqOut = frequency;
+    m_freqOut = frequency;
 }
 
 DeviceAudioSdl::~DeviceAudioSdl() {
@@ -166,22 +166,22 @@ void DeviceAudioSdl::mixOutputSInt(Uint8 *stream, int len) {
 }
 
 static void adjustVolume(signed short* data, size_t len, float volume) {
-	for(size_t i=0; i<len; ++i) {
-		signed short & shortValue=data[i];
-		float value=shortValue*volume;
-		if(value>(float)SHRT_MAX) value=(float)SHRT_MAX; // clamp
-		else if(value<(float)SHRT_MIN) value=(float)SHRT_MIN;
-		shortValue=(signed short)value;
-	}
+    for(size_t i=0; i<len; ++i) {
+        signed short & shortValue=data[i];
+        float value=shortValue*volume;
+        if(value>(float)SHRT_MAX) value=(float)SHRT_MAX; // clamp
+        else if(value<(float)SHRT_MIN) value=(float)SHRT_MIN;
+        shortValue=(signed short)value;
+    }
 }
 
 unsigned int DeviceAudioSdl::sampleFromMemory(const AudioSample & sample, float volume) {
     Uint8 destChannels= m_isDesiredFormat ? 1 : m_spec.channels; // convert to mono
-	Uint16 format = sample.bytesPerSample()==2 ? AUDIO_S16 :  sample.bytesPerSample()==1 ? AUDIO_S8 : 0;
-	if(!format) {
+    Uint16 format = sample.bytesPerSample()==2 ? AUDIO_S16 :  sample.bytesPerSample()==1 ? AUDIO_S8 : 0;
+    if(!format) {
         fprintf(stderr, "DeviceAudioSdl WARNING: %i bit samples not supported.\n", sample.bitsPerSample());
         return 0;
-	}
+    }
     SDL_AudioCVT cvt;
     SDL_BuildAudioCVT(&cvt, format, sample.channels(), sample.sampleRate(),
                             m_spec.format, destChannels, m_spec.freq);
@@ -200,7 +200,7 @@ unsigned int DeviceAudioSdl::sampleFromMemory(const AudioSample & sample, float 
     }
     // adjust volume:
     if((volume!=1.0f)&&m_isDesiredFormat)
-		adjustVolume((signed short *)track.data, track.dlen/2, volume);
+        adjustVolume((signed short *)track.data, track.dlen/2, volume);
 
     mm_sample.insert(make_pair(++m_uniqueCounter,track));
     return m_uniqueCounter;
@@ -210,15 +210,15 @@ bool DeviceAudioSdl::sampleDestroy(unsigned int sample) {
     // look for sample:
     map<unsigned int,_AudioTrack>::iterator iter=mm_sample.find(sample);
     if( iter == mm_sample.end() ) return false;
-	// stop currently playing sounds referring to this sample:
+    // stop currently playing sounds referring to this sample:
     SDL_LockAudio();
-	for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].data == iter->second.data)
-		ma_sound[i].isPlaying=false;
+    for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].data == iter->second.data)
+        ma_sound[i].isPlaying=false;
     SDL_UnlockAudio();
-	// cleanup:
-	delete iter->second.data;
-	mm_sample.erase(iter);
-	return true;
+    // cleanup:
+    delete iter->second.data;
+    mm_sample.erase(iter);
+    return true;
 }
 
 unsigned int DeviceAudioSdl::soundPlay(unsigned int sample, float volumeL, float volumeR, float disparity, float pitch) {
@@ -282,8 +282,8 @@ bool DeviceAudioSdl::soundStop(unsigned int uniqueHandle) {
 
 void DeviceAudioSdl::soundStop() {
     SDL_LockAudio();
-	for (unsigned int i=0; i<m_nSound; ++i )
-		ma_sound[i].isPlaying=false;
+    for (unsigned int i=0; i<m_nSound; ++i )
+        ma_sound[i].isPlaying=false;
     SDL_UnlockAudio();
 }
 
