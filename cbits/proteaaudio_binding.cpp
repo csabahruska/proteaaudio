@@ -150,6 +150,12 @@ void soundStopAll() {
     audio.soundStop();
 }
 
+int sampleDestroy(uint64_t sample) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return false;
+    return audio.sampleDestroy(sample);
+}
+
 // sound
 sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
@@ -157,7 +163,7 @@ sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity
     return audio.soundLoop(sample, volumeL, volumeR, disparity, pitch);
 }
 
-sound_t  soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
+sound_t soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     return audio.soundPlay(sample, volumeL, volumeR, disparity, pitch);

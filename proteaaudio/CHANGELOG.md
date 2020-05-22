@@ -1,6 +1,7 @@
 # 0.8.1
 - update RtAudio to 5.1.0
 - update stb_vorbis to v1.19
+- add sampleDestroy
 - fix: generate unique handles for Sample and Sound types
 
 # 0.8.0

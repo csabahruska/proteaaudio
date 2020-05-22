@@ -39,6 +39,7 @@ module Sound.ProteaAudio (
     sampleFromMemoryWav,
     sampleFromMemoryOgg,
     sampleFromFile,
+    sampleDestroy,
 
     -- * Sample Playback
     soundLoop,
@@ -133,6 +134,9 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
   , `Float' -- ^ volume
   } -> `Sample' Sample -- ^ returns handle
 #}
+
+-- | Unloads a previously loaded sample from memory, invalidating the handle.
+{#fun sampleDestroy {fromSample `Sample'} -> `Bool'#}
 
 -- | Set main mixer volume.
 {#fun volume

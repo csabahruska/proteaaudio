@@ -15,6 +15,7 @@ sample_t _sampleFromMemoryPcm(char *data, int size, int channels, int sampleRate
 sample_t _sampleFromMemoryWav(char *data, int size, float volume);
 sample_t _sampleFromMemoryOgg(char *data, int size, float volume);
 sample_t sampleFromFile(char* filename, float volume);
+int sampleDestroy(uint64_t sample);
 int soundActive();
 void soundStopAll();
 sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity, float pitch);

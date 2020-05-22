@@ -46,4 +46,8 @@ main = do
     soundPlay sampleB 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
     waitPlayback
 
+    sampleDestroy sampleB
+    soundPlay sampleB 1 1 0 1 -- we have invalidated the handle; nothing should happen now
+    waitPlayback
+
     finishAudio
