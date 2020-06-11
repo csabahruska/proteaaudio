@@ -185,6 +185,12 @@ unsigned int DeviceAudioRt::soundActive() const {
     return ret;
 }
 
+bool DeviceAudioRt::soundActive(uint64_t uniqueHandle) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
+    return ma_sound[sound].isPlaying;
+}
+
 int DeviceAudioRt::mixOutputFloat(signed short *outputBuffer, unsigned int nFrames) {
     for(unsigned int j=0; j<nFrames; ++j) {
         float left=0.0f;

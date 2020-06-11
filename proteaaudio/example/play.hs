@@ -7,7 +7,7 @@ import Control.Concurrent
 import Sound.ProteaAudio
 
 waitPlayback = do
-  n <- soundActive
+  n <- soundActiveAll
   when  (n > 0) $ do
     threadDelay oneSec
     waitPlayback
@@ -31,9 +31,11 @@ main = do
     sndTrkA <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
     threadDelay oneSec -- wait 1 sec
     sndTrkB <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+    soundActive sndTrkB >>= print
     -- play 3 sec
     threadDelay $ 3 * oneSec
     soundStop sndTrkB
+    soundActive sndTrkB >>= print
     -- wait sndTrkA to finish
     waitPlayback
 

@@ -1,3 +1,7 @@
+# 0.9.X-unreleased
+- rename `soundActive` to `soundActiveAll`
+- `soundActive` now queries a specific sound
+
 # 0.8.1
 - update RtAudio to 5.1.0
 - update stb_vorbis to v1.19

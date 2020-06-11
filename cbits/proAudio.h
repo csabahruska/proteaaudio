@@ -186,6 +186,8 @@ public:
     virtual void soundStop()=0;
     /// returns number of currently active sounds
     virtual unsigned int soundActive() const=0;
+    /// check if a specified sound is active
+    virtual bool soundActive(uint64_t sound)=0;
 
 protected:
     /// constructor

@@ -308,3 +308,9 @@ unsigned int DeviceAudioSdl::soundActive() const {
         if (ma_sound[i].isPlaying) ++ret;
     return ret;
 }
+
+bool DeviceAudioSdl::soundActive(uint64_t uniqueHandle) {
+    unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
+    if((sound>=m_nSound) || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
+    return ma_sound[sound].isPlaying;
+}

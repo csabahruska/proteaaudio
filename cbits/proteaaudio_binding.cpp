@@ -138,7 +138,7 @@ sample_t _sampleFromMemoryOgg(char *data, int size, float volume) {
     return ret;
 }
 
-int soundActive() {
+int soundActiveAll() {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     return (int)audio.soundActive();
@@ -191,4 +191,10 @@ int soundStop(sound_t sound) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     return audio.soundStop(sound);
+}
+
+int soundActive(sound_t sound) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    return audio.soundActive(sound);
 }

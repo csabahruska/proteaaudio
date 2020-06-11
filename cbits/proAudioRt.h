@@ -80,6 +80,8 @@ public:
     virtual void soundStop();
     /// returns number of currently active sounds
     virtual unsigned soundActive() const;
+    /// check if a specified sound is active
+    virtual bool soundActive(uint64_t sound);
 protected:
     /// constructor. Use the create() method instead
     DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize);

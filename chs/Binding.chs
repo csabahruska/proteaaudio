@@ -30,7 +30,7 @@ module Sound.ProteaAudio (
 
     -- * Main Mixer
     volume,
-    soundActive,
+    soundActiveAll,
     soundStopAll,
 
     -- * Sample Loading
@@ -47,7 +47,8 @@ module Sound.ProteaAudio (
     soundLoopOn,
     soundPlayOn,
     soundUpdate,
-    soundStop
+    soundStop,
+    soundActive
  ) where
 
 import Foreign
@@ -148,7 +149,7 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
 #}
 
 -- | Return the number of currently active sounds.
-{#fun soundActive {} -> `Int'#}
+{#fun soundActiveAll {} -> `Int'#}
 
 -- | Stops all sounds immediately.
 {#fun soundStopAll {} -> `()'#}
@@ -208,3 +209,5 @@ sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _
 -- | Stops a specified sound immediately.
 {#fun soundStop {fromSound `Sound'} -> `Bool'#}
 
+-- | Checks if a specified sound is still active.
+{#fun soundActive{fromSound `Sound'} -> `Bool'#}
