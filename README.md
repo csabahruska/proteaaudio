@@ -13,6 +13,13 @@ Supported audio formats:
 
 Samples can be loaded from file or memory.
 
+# Setup
+
+On Linux you need to install the audio library:
+```
+sudo apt install libpulse-dev
+```
+
 # Build
 
 ### Stack
