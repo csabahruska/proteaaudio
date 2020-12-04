@@ -13,10 +13,9 @@ Supported audio formats:
 
 ## Audio backend flavours
 
-The proteaudio library has two low-level backend implementation.  
-Both library implements the same Haskell API.  
-The API code is shared to ensure compatibility.
+The `proteaudio` library has two low-level backend implementation.
 
 - [proteaaudio-sdl](./proteaaudio-sdl) is using SDL2
 - [proteaaudio](./proteaaudio) is directly using the OS native audio library
 
+ Both library implements the same Haskell API.
