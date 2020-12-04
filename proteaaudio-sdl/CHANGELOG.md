@@ -1,2 +1,2 @@
-# 0.8.1
+# 0.9.0
 - initial release; keeping on par API-wise with package proteaaudio

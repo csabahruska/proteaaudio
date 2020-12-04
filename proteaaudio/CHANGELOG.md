@@ -1,4 +1,4 @@
-# 0.9.X-unreleased
+# 0.9.0
 - rename `soundActive` to `soundActiveAll`
 - `soundActive` now queries a specific sound
 
