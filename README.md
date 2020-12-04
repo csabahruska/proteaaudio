@@ -11,13 +11,11 @@ Supported audio formats:
 - Ogg
 - Raw linear PCM
 
-# Audio backend flavours
+## Audio backend flavours
 
-The proteaudio library has two low-level backend implementation. Both libraries implement the same Haskell API, furthermore they share the Haskell API code to ensure the compatibility.
+The proteaudio library has two low-level backend implementation.  
+Both libraries implement the same Haskell API and they share most of the code to ensure the compatibility.
 
-## proteaaudio-sdl
-  [./proteaaudio-sdl]
-
-## proteaaudio
-  [./proteaaudio]
+- [proteaaudio-sdl](./proteaaudio-sdl) is using SDL2
+- [proteaaudio](./proteaaudio) is directly using the OS native audio library
 
