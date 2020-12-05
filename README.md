@@ -13,7 +13,7 @@ Supported audio formats:
 
 ## Audio backend flavours
 
-The `proteaudio` library has two low-level backend implementation.
+The `proteaaudio` library has two low-level backend implementation.
 
 - [proteaaudio-sdl](./proteaaudio-sdl) is using SDL2
 - [proteaaudio](./proteaaudio) is directly using the OS native audio library
