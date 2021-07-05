@@ -1,15 +1,15 @@
+Cabal-Version:       2.2
 Name:                proteaaudio-sdl
-Version:             0.9.0
+Version:             0.9.1
 Synopsis:            Simple audio library for SDL.
 Description:         Simple audio library for SDL. Supports PCM, Ogg and Wav playback and multichannel mixing.
-License:             BSD3
+License:             BSD-3-Clause
 License-file:        LICENSE
 Author:              Csaba Hruska, Michael Karg
 Maintainer:          csaba.hruska@gmail.com
 Stability:           Experimental
 Category:            Sound
 Tested-With:         GHC == 8.8.3
-Cabal-Version:       >= 1.10
 Build-Type:          Simple
 
 Extra-Source-Files:
@@ -43,18 +43,19 @@ Library
 
   default-language:     Haskell2010
 
-  Build-tools:          c2hs
+  build-tool-depends:   c2hs:c2hs
   Exposed-Modules:      Sound.ProteaAudio.SDL
   Hs-Source-Dirs:       .
 
-  C-Sources:            cbits/proAudio.cpp
+  CXX-Sources:          cbits/proAudio.cpp
                         cbits/proAudioSdl.cpp
                         cbits/proteaaudio_binding.cpp
-                        cbits/stb_vorbis.c
+
+  C-Sources:            cbits/stb_vorbis.c
 
   Include-Dirs:         cbits
 
-  CC-Options:           "-DPROTEAAUDIO_SDL"
+  CXX-Options:          "-DPROTEAAUDIO_SDL"
 
   Includes:             SDL_audio.h
 
