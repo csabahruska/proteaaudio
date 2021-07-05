@@ -1,3 +1,6 @@
+# 0.9.1
+- fix a Cabal C/C++ compiler flag handling bug, now should compile with GHC 8.10 and above also.
+
 # 0.9.0
 - rename `soundActive` to `soundActiveAll`
 - `soundActive` now queries a specific sound
