@@ -23,6 +23,7 @@ bool AudioSample::bitsPerSample(unsigned short bits) {
              delete [] m_data;
              m_data = data;
              m_size*=2;
+             m_bitsPerSample=16;
              return true;
         }
         else if(m_bitsPerSample==16) {
@@ -38,6 +39,7 @@ bool AudioSample::bitsPerSample(unsigned short bits) {
              delete [] m_data;
              m_data = data;
              m_size/=2;
+             m_bitsPerSample=16;
              return true;
         }
     }
