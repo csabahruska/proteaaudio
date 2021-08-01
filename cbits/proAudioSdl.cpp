@@ -177,8 +177,18 @@ static void adjustVolume(signed short* data, size_t len, float volume) {
 
 uint64_t DeviceAudioSdl::sampleFromMemory(const AudioSample & sample, float volume) {
     Uint8 destChannels= m_isDesiredFormat ? 1 : m_spec.channels; // convert to mono
-    Uint16 format = sample.bytesPerSample()==2 ? AUDIO_S16 :  sample.bytesPerSample()==1 ? AUDIO_S8 : 0;
-    if(!format) {
+    Uint16 format = 0;
+    switch (sample.bytesPerSample()) {
+      case 1:
+        format = AUDIO_S8;
+        break;
+      case 2:
+        format = AUDIO_S16;
+        break;
+      case 4:
+        format = AUDIO_F32;
+        break;
+      default:
         fprintf(stderr, "DeviceAudioSdl WARNING: %i bit samples not supported.\n", sample.bitsPerSample());
         return 0;
     }
