@@ -88,7 +88,7 @@ newtype Sound = Sound{ fromSound :: {#type sound_t#} }
   , `Int' -- ^ memory buffer size in bytes
   , `Int' -- ^ number of channels, e.g. 1 for mono, 2 for stereo.
   , `Int' -- ^ sample rate, i.e. 44100 Hz
-  , `Int' -- ^ bits per sample, i.e. 8/16/32
+  , `Int' -- ^ bits per sample, i.e. 8, 16, 32
   , `Float' -- ^ volume
   } -> `Sample' Sample -- ^ returns handle
 #}
@@ -113,7 +113,7 @@ newtype Sound = Sound{ fromSound :: {#type sound_t#} }
 sampleFromMemoryPcm :: ByteString -- ^ pcm sample data; array of pcm samples (signed 8 bit int, signed 16 bit int or 32 bit float)
                     -> Int -- ^ number of channels, e.g. 1 for mono, 2 for stereo.
                     -> Int -- ^ sample rate, i.e. 44100 Hz
-                    -> Int -- ^ bits per sample, i.e. 8/16/32
+                    -> Int -- ^ bits per sample, i.e. 8, 16, 32
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
 sampleFromMemoryPcm pcmData channels sampleRate bitsPerSample volume =
