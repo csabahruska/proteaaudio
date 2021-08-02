@@ -1,6 +1,6 @@
 Cabal-Version:       2.2
 Name:                proteaaudio-sdl
-Version:             0.9.1
+Version:             0.9.2
 Synopsis:            Simple audio library for SDL.
 Description:         Simple audio library for SDL. Supports PCM, Ogg and Wav playback and multichannel mixing.
 License:             BSD-3-Clause

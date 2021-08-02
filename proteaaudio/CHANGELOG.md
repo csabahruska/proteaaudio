@@ -1,3 +1,6 @@
+# 0.9.2
+- fix a sample format conversion bug that caused pitch problems in `sampleFromMemoryPcm`
+
 # 0.9.1
 - fix a Cabal C/C++ compiler flag handling bug, now should compile with GHC 8.10 and above also.
 
