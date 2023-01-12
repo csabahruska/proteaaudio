@@ -1,3 +1,6 @@
+# 0.9.3
+- apply migration to GHC 9.4.* for Windows (see https://gitlab.haskell.org/ghc/ghc/-/issues/22738)
+
 # 0.9.2
 - fix `sampleFromMemoryPcm` to support 32 bit float pcm samples
 
