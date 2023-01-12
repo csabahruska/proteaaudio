@@ -55,7 +55,7 @@ source-repository head
 
 Library
   Build-Depends:        base >= 4 && < 5,
-                        bytestring == 0.10.*
+                        bytestring >=0.10 && <0.12,
 
   default-language:     Haskell2010
 
@@ -74,16 +74,26 @@ Library
 
   CXX-Options:          "-DPROTEAAUDIO_RT"
 
+  if impl(ghc >= 9.4)
+    build-depends:      system-cxx-std-lib
+  else
+    if os(windows)
+      extra-libraries:  stdc++
+    if os(linux)
+      extra-libraries:  stdc++
+    if os(darwin)
+      extra-libraries:  stdc++
+
   if os(windows)
     CXX-Options:        "-D__WINDOWS_DS__"
-    Extra-Libraries:    stdc++ ole32 dsound winmm
+    Extra-Libraries:    ole32 dsound winmm
   if os(linux)
     CXX-Options:        "-D__LINUX_PULSE__"
-    Extra-Libraries:    stdc++ pthread pulse-simple pulse
+    Extra-Libraries:    pthread pulse-simple pulse
     pkgconfig-depends:  libpulse-simple, libpulse
   if os(darwin)
     CXX-Options:        "-D__MACOSX_CORE__"
-    Extra-Libraries:    stdc++ pthread
+    Extra-Libraries:    pthread
     Frameworks:         CoreFoundation CoreAudio
 
 executable proteaaudio-play
@@ -99,5 +109,5 @@ executable proteaaudio-play
   build-depends:
     base >= 4 && < 5,
     filepath >=1.4 && <2,
-    bytestring == 0.10.*,
+    bytestring >=0.10 && <0.12,
     proteaaudio
