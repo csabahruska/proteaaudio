@@ -1,6 +1,6 @@
 Cabal-Version:       2.2
 Name:                proteaaudio
-Version:             0.9.4
+Version:             1.0.0
 Synopsis:            Simple audio library for Windows, Linux, OSX.
 Description:         Simple audio library for Windows, Linux, OSX. Supports PCM, Ogg and Wav playback and multichannel mixing.
 License:             BSD-3-Clause
@@ -36,6 +36,8 @@ Extra-Source-Files:
   cbits/proteaaudio_binding.cpp
   cbits/proteaaudio_binding.h
   cbits/stb_vorbis.c
+  cbits/minimp3_ex.h
+  cbits/minimp3.h
 
   Sound/ProteaAudio.chs
 

@@ -1,3 +1,6 @@
+# 1.0.0
+- add MP3 support
+
 # 0.9.3
 - apply migration to GHC 9.4.* for Windows (see https://gitlab.haskell.org/ghc/ghc/-/issues/22738)
 

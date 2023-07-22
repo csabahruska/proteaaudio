@@ -51,6 +51,25 @@ static AudioSample* loadWavFromMemory(unsigned char * ptr, size_t len) {
   return pSample;
 }
 
+#define MINIMP3_IMPLEMENTATION
+#include "minimp3_ex.h"
+
+static AudioSample* loadMp3FromMemory(unsigned char * file_data_ptr, size_t file_data_len) {
+  mp3dec_t mp3d;
+  mp3dec_file_info_t info;
+  memset(&info, 0, sizeof(info));
+
+  if (mp3dec_load_buf(&mp3d, file_data_ptr, file_data_len, &info, 0, 0)) return 0;
+
+  // convert to AudioSample:
+  unsigned int size = info.samples*sizeof(short); // channels included, byte size = samples*sizeof(mp3d_sample_t)
+  unsigned char * data = new unsigned char[size];
+  if(!data) return 0;
+  memcpy(data, info.buffer, size);
+  free(info.buffer);
+  return new AudioSample(data, size, info.channels, info.hz, 16);
+}
+
 extern "C" {
 extern int stb_vorbis_decode_memory(unsigned char *mem, int len, int *channels, int* sample_rate, short **output);
 };
@@ -132,6 +151,16 @@ sample_t _sampleFromMemoryOgg(char *data, int size, float volume) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
     AudioSample* pSample = loadOggFromMemory((unsigned char*)data, size);
+    if(!pSample) return 0;
+    sample_t ret = audio.sampleFromMemory(*pSample, volume);
+    delete pSample;
+    return ret;
+}
+
+sample_t _sampleFromMemoryMp3(char *data, int size, float volume) {
+    DeviceAudio & audio = DeviceAudio::singleton();
+    if((&audio) == 0) return 0;
+    AudioSample* pSample = loadMp3FromMemory((unsigned char*)data, size);
     if(!pSample) return 0;
     sample_t ret = audio.sampleFromMemory(*pSample, volume);
     delete pSample;

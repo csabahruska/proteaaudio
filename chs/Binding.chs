@@ -38,6 +38,7 @@ module Sound.ProteaAudio (
     sampleFromMemoryPcm,
     sampleFromMemoryWav,
     sampleFromMemoryOgg,
+    sampleFromMemoryMp3,
     sampleFromFile,
     sampleDestroy,
 
@@ -109,6 +110,14 @@ newtype Sound = Sound{ fromSound :: {#type sound_t#} }
   } -> `Sample' Sample -- ^ returns handle
 #}
 
+-- | Loads mp3 sound sample from memory buffer.
+{#fun _sampleFromMemoryMp3
+  { id `Ptr CChar' -- ^ memory buffer pointer
+  , `Int' -- ^ memory buffer size in bytes
+  , `Float' -- ^ volume
+  } -> `Sample' Sample -- ^ returns handle
+#}
+
 -- | Loads raw linear pcm sound sample from memory buffer.
 sampleFromMemoryPcm :: ByteString -- ^ pcm sample data; array of pcm samples (signed 8 bit int, signed 16 bit int or 32 bit float)
                     -> Int -- ^ number of channels, e.g. 1 for mono, 2 for stereo.
@@ -130,6 +139,12 @@ sampleFromMemoryOgg :: ByteString -- ^ ogg sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
 sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _sampleFromMemoryOgg ptr size volume
+
+-- | Loads mp3 sound sample from memory buffer.
+sampleFromMemoryMp3 :: ByteString -- ^ mp3 sample data
+                    -> Float -- ^ volume
+                    -> IO Sample -- ^ return sample handle
+sampleFromMemoryMp3 mp3Data volume = useAsCStringLen mp3Data $ \(ptr, size) -> _sampleFromMemoryMp3 ptr size volume
 
 -- | Loads a sound sample from file.
 {#fun sampleFromFile

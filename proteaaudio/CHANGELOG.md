@@ -1,3 +1,6 @@
+# 1.0.0
+- add MP3 support
+
 # 0.9.4
 - fix PulseAudio default output device detection
 

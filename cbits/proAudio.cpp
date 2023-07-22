@@ -143,9 +143,28 @@ static string toLower(const string & s) {
     return retStr;
 }
 
+#include "minimp3_ex.h"
+
+static AudioSample* loadMp3(const std::string & fname) {
+  mp3dec_t mp3d;
+  mp3dec_file_info_t info;
+  memset(&info, 0, sizeof(info));
+
+  if (mp3dec_load(&mp3d, const_cast<char*>(fname.c_str()), &info, 0, 0)) return 0;
+
+  // convert to AudioSample:
+  unsigned int size = info.samples*sizeof(short); // channels included, byte size = samples*sizeof(mp3d_sample_t)
+  unsigned char * data = new unsigned char[size];
+  if(!data) return 0;
+  memcpy(data, info.buffer, size);
+  free(info.buffer);
+  return new AudioSample(data, size, info.channels, info.hz, 16);
+}
+
 DeviceAudio::DeviceAudio() : m_freqOut(0), m_volL(1.0f), m_volR(1.0f) {
     loaderRegister(AudioSample::loadWav,"wav");
     loaderRegister(loadOgg,"ogg");
+    loaderRegister(loadMp3,"mp3");
 }
 
 uint64_t DeviceAudio::sampleFromFile(const std::string & filename, float volume) {

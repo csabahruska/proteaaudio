@@ -14,6 +14,7 @@ void volume(float left, float right);
 sample_t _sampleFromMemoryPcm(char *data, int size, int channels, int sampleRate, int bitsPerSample, float volume);
 sample_t _sampleFromMemoryWav(char *data, int size, float volume);
 sample_t _sampleFromMemoryOgg(char *data, int size, float volume);
+sample_t _sampleFromMemoryMp3(char *data, int size, float volume);
 sample_t sampleFromFile(char* filename, float volume);
 int sampleDestroy(uint64_t sample);
 int soundActiveAll();
