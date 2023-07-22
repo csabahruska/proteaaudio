@@ -9,6 +9,7 @@ ProteaAudio is a stereo audio mixer/playback library for
 Supported audio formats:
 - Wav
 - Ogg
+- Mp3
 - Raw linear PCM
 
 Samples can be loaded from file or memory.
@@ -84,6 +85,7 @@ main = do
   sampleB <- case takeExtension filename of
     ".ogg" -> sampleFromMemoryOgg buffer 1.0
     ".wav" -> sampleFromMemoryWav buffer 1.0
+    ".mp3" -> sampleFromMemoryMp3 buffer 1.0
 
   soundPlay sampleB 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
   waitPlayback
