@@ -1,4 +1,4 @@
-# 1.0.0
+# 0.10.0
 - add MP3 support
 - add pause support: soundUpdate takes a Bool (is paused) parameter
 
