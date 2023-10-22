@@ -9,6 +9,7 @@ ProteaAudio is a minimalist stereo audio mixer/playback library for
 Supported audio formats:
 - Wav
 - Ogg
+- Mp3
 - Raw linear PCM
 
 ## Audio backend flavours
