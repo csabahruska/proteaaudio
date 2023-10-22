@@ -1,4 +1,6 @@
-{-#LANGUAGE ForeignFunctionInterface,CPP#-}
+{-#LANGUAGE ForeignFunctionInterface #-}
+{-#LANGUAGE OverloadedStrings #-}
+{-#LANGUAGE CPP #-}
 #include "proteaaudio_binding.h"
 
 #if defined PROTEAAUDIO_SDL
@@ -54,7 +56,8 @@ module Sound.ProteaAudio (
 
 import Foreign
 import Foreign.C
-import Data.ByteString (ByteString, useAsCStringLen)
+import Data.ByteString (ByteString)
+import qualified Data.ByteString as BS
 
 -- | Audio sample resource handle. A sample can be shared between multiple Sound tracks. (abstraction for data)
 newtype Sample = Sample{ fromSample :: {#type sample_t#} }
@@ -126,25 +129,37 @@ sampleFromMemoryPcm :: ByteString -- ^ pcm sample data; array of pcm samples (si
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
 sampleFromMemoryPcm pcmData channels sampleRate bitsPerSample volume =
-  useAsCStringLen pcmData $ \(ptr, size) -> _sampleFromMemoryPcm ptr size channels sampleRate bitsPerSample volume
+  BS.useAsCStringLen pcmData $ \(ptr, size) -> _sampleFromMemoryPcm ptr size channels sampleRate bitsPerSample volume
 
 -- | Loads wav sound sample from memory buffer.
 sampleFromMemoryWav :: ByteString -- ^ wav sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
-sampleFromMemoryWav wavData volume = useAsCStringLen wavData $ \(ptr, size) -> _sampleFromMemoryWav ptr size volume
+sampleFromMemoryWav wavData volume = BS.useAsCStringLen wavData $ \(ptr, size) -> _sampleFromMemoryWav ptr size volume
 
 -- | Loads ogg sound sample from memory buffer.
 sampleFromMemoryOgg :: ByteString -- ^ ogg sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
-sampleFromMemoryOgg oggData volume = useAsCStringLen oggData $ \(ptr, size) -> _sampleFromMemoryOgg ptr size volume
+sampleFromMemoryOgg oggData volume = BS.useAsCStringLen oggData $ \(ptr, size) -> _sampleFromMemoryOgg ptr size volume
 
 -- | Loads mp3 sound sample from memory buffer.
 sampleFromMemoryMp3 :: ByteString -- ^ mp3 sample data
                     -> Float -- ^ volume
                     -> IO Sample -- ^ return sample handle
-sampleFromMemoryMp3 mp3Data volume = useAsCStringLen mp3Data $ \(ptr, size) -> _sampleFromMemoryMp3 ptr size volume
+sampleFromMemoryMp3 mp3Data volume = BS.useAsCStringLen mp3Data $ \(ptr, size) -> _sampleFromMemoryMp3 ptr size volume
+
+-- | Loads wav, ogg or mp3 sound sample from memory buffer (autodetects audio format).
+sampleFromMemory :: ByteString -> Float -> IO Sample
+sampleFromMemory bs volume
+  | BS.take 4 bs == "RIFF"
+  = sampleFromMemoryWav bs volume
+  | BS.take 4 bs == "OggS"
+  = sampleFromMemoryOgg bs volume
+  | BS.take 3 bs == "ID3" || BS.take 2 bs `elem` ["\xFF\xFB", "\xFF\xF3", "\xFF\xF2"]
+  = sampleFromMemoryMp3 bs volume
+  | otherwise
+  = error "Could not detect audio format"
 
 -- | Loads a sound sample from file.
 {#fun sampleFromFile
