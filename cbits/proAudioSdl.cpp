@@ -16,7 +16,7 @@ class _AudioTrack {
 public:
     /// default constructor
     _AudioTrack(Uint8 * pData=0, unsigned int length=0) : data(pData), dlen(length) {
-        dpos=0; disparity=0.0f; volL=1.0f; volR=1.0f; pitch=1.0f; isLoop=false; isPlaying=false; };
+        dpos=0; disparity=0.0f; volL=1.0f; volR=1.0f; pitch=1.0f; isLoop=false; isPlaying=false; isPaused=false; };
     /// pointer to raw sample data
     Uint8 *data;
     /// position in playback
@@ -35,6 +35,8 @@ public:
     bool isLoop;
     /// stores whether sample is currently playing
     bool isPlaying;
+    /// stores whether sample is currently paused
+    bool isPaused;
     /// unique id for this sound
     uint64_t uniqueId;
 };
@@ -100,7 +102,7 @@ void DeviceAudioSdl::mixOutputFloat(signed short *outputBuffer, unsigned int nFr
     for(unsigned int j=0; j<nFrames; j+=2) {
         float left=0.0f;
         float right=0.0f;
-        for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].isPlaying) {
+        for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].isPlaying && !ma_sound[i].isPaused) {
             if((ma_sound[i].pitch==1.0f)&&!ma_sound[i].disparity) { // use optimized default mixing:
                 unsigned int currPos=ma_sound[i].dpos+j;
                 if(ma_sound[i].isLoop) currPos%=ma_sound[i].dlen;
@@ -147,6 +149,8 @@ void DeviceAudioSdl::mixOutputFloat(signed short *outputBuffer, unsigned int nFr
         else outputBuffer[j+1]=(Sint16)right;
     }
     for (unsigned int i=0; i<m_nSound; ++i ) {
+        if (ma_sound[i].isPaused) continue;
+
         if(ma_sound[i].pitch==1.0f) ma_sound[i].dpos += nFrames;
         else ma_sound[i].dpos += (unsigned int)(nFrames*ma_sound[i].pitch);
 
@@ -158,6 +162,8 @@ void DeviceAudioSdl::mixOutputFloat(signed short *outputBuffer, unsigned int nFr
 
 void DeviceAudioSdl::mixOutputSInt(Uint8 *stream, int len) {
     for (unsigned int i=0; i<m_nSound; ++i ) {
+        if (ma_sound[i].isPaused) continue;
+
         unsigned int amount = ma_sound[i].dlen-ma_sound[i].dpos;
         if (amount > (unsigned int)len) amount = (unsigned int)len;
         SDL_MixAudio(stream, &ma_sound[i].data[ma_sound[i].dpos], amount, SDL_MIX_MAXVOLUME);
@@ -259,6 +265,7 @@ uint64_t DeviceAudioSdl::soundPlayOn(unsigned int i, uint64_t sample, float volu
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
+    ma_sound[i].isPaused=false;
     ma_sound[i].uniqueId=UH_UNPACK_UNIQUE_ID(uniqueHandle);
     SDL_UnlockAudio();
     return uniqueHandle;
@@ -284,10 +291,11 @@ uint64_t DeviceAudioSdl::soundLoopOn(unsigned int i, uint64_t sample, float volu
     return uniqueHandle;
 }
 
-bool DeviceAudioSdl::soundUpdate(uint64_t uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
+bool DeviceAudioSdl::soundUpdate(uint64_t uniqueHandle, bool pause, float volumeL, float volumeR, float disparity, float pitch ) {
     unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
     if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
     SDL_LockAudio();
+    ma_sound[sound].isPaused=pause;
     ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
     ma_sound[sound].disparity=disparity;

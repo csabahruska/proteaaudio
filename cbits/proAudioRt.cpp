@@ -31,6 +31,8 @@ struct _AudioTrack {
     bool isLoop;
     /// stores whether sample is currently playing
     bool isPlaying;
+    /// stores whether sample is currently paused
+    bool isPaused;
     /// unique id for this sound
     uint64_t uniqueId;
 };
@@ -137,6 +139,7 @@ uint64_t DeviceAudioRt::soundPlayOn(unsigned int i, uint64_t sample, float volum
     ma_sound[i].pitch=fabs(pitch);
     ma_sound[i].isLoop=false;
     ma_sound[i].isPlaying=true;
+    ma_sound[i].isPaused=false;
     ma_sound[i].uniqueId=UH_UNPACK_UNIQUE_ID(uniqueHandle);
     return uniqueHandle;
 }
@@ -153,9 +156,10 @@ uint64_t DeviceAudioRt::soundLoopOn(unsigned int i, uint64_t sample, float volum
     return uniqueHandle;
 }
 
-bool DeviceAudioRt::soundUpdate(uint64_t uniqueHandle, float volumeL, float volumeR, float disparity, float pitch ) {
+bool DeviceAudioRt::soundUpdate(uint64_t uniqueHandle, bool pause, float volumeL, float volumeR, float disparity, float pitch ) {
     unsigned int sound = UH_UNPACK_PAYLOAD(uniqueHandle);
     if((sound>=m_nSound) || !ma_sound[sound].isPlaying || ma_sound[sound].uniqueId!=UH_UNPACK_UNIQUE_ID(uniqueHandle)) return false;
+    ma_sound[sound].isPaused=pause;
     ma_sound[sound].volL=volumeL;
     ma_sound[sound].volR=volumeR;
     ma_sound[sound].disparity=disparity;
@@ -195,7 +199,7 @@ int DeviceAudioRt::mixOutputFloat(signed short *outputBuffer, unsigned int nFram
     for(unsigned int j=0; j<nFrames; ++j) {
         float left=0.0f;
         float right=0.0f;
-        for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].isPlaying) {
+        for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].isPlaying && !ma_sound[i].isPaused) {
             unsigned int nChannels = ma_sound[i].sample->channels();
             if((ma_sound[i].pitch==1.0f)&&!ma_sound[i].disparity) { // use optimized default mixing:
                 unsigned int currPos=ma_sound[i].dpos+j;
@@ -257,6 +261,8 @@ int DeviceAudioRt::mixOutputFloat(signed short *outputBuffer, unsigned int nFram
     }
     // calculate new pos:
     for (unsigned int i=0; i<m_nSound; ++i ) {
+        if (ma_sound[i].isPaused) continue;
+
         if(ma_sound[i].pitch==1.0f) ma_sound[i].dpos += nFrames;
         else ma_sound[i].dpos += (unsigned int)(nFrames*ma_sound[i].pitch);
 

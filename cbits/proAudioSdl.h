@@ -77,7 +77,7 @@ public:
      \param disparity (optional) time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right.
      \param pitch (optional) pitch factor for playback. 0.5 corresponds to one octave below, 2.0 to one above the original sample.
      \return true in case the parameters have been updated successfully */
-    virtual bool soundUpdate(uint64_t sound, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f );
+    virtual bool soundUpdate(uint64_t sound, bool pause, float volumeL, float volumeR, float disparity=0.0f, float pitch=1.0f );
     /// stops a specified sound immediately
     virtual bool soundStop(uint64_t sound);
     /// stops all sounds immediately

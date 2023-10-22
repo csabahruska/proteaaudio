@@ -214,6 +214,7 @@ sampleFromMemoryMp3 mp3Data volume = useAsCStringLen mp3Data $ \(ptr, size) -> _
 -- | Updates parameters of a specified sound.
 {#fun soundUpdate
   { fromSound `Sound' -- ^ handle of a currently active sound (if sound has stopped, this is a no-op)
+  , `Bool' -- ^ is paused state, this does not change the sound active state
   , `Float' -- ^ left volume
   , `Float' -- ^ right volume
   , `Float' -- ^ time difference between left and right channel in seconds. Use negative values to specify a delay for the left channel, positive for the right

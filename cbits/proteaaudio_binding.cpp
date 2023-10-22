@@ -210,10 +210,10 @@ sound_t soundPlayOn(unsigned int track, sample_t sample, float volumeL, float vo
     return audio.soundPlayOn(track, sample, volumeL, volumeR, disparity, pitch);    
 }
 
-int soundUpdate(sound_t sound, float volumeL, float volumeR, float disparity, float pitch) {
+int soundUpdate(sound_t sound, int pause, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
-    return audio.soundUpdate(sound, volumeL, volumeR, disparity, pitch);
+    return audio.soundUpdate(sound, pause, volumeL, volumeR, disparity, pitch);
 }
 
 int soundStop(sound_t sound) {

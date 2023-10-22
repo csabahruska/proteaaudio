@@ -73,6 +73,12 @@ main = do
   threadDelay $ 3 * oneSec
   soundStop sndTrkB
   soundActive sndTrkB >>= print
+
+  soundUpdate sndTrkA True 1 1 0 1
+  putStrLn "pause sound, press enter to continue"
+  getLine
+  soundUpdate sndTrkA False 1 1 0 1
+
   -- wait sndTrkA to finish
   waitPlayback
 
