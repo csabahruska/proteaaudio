@@ -41,6 +41,7 @@ module Sound.ProteaAudio (
     sampleFromMemoryWav,
     sampleFromMemoryOgg,
     sampleFromMemoryMp3,
+    sampleFromMemory,
     sampleFromFile,
     sampleDestroy,
 
