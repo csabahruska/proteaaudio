@@ -1,6 +1,7 @@
 # 0.10.0
 - add MP3 support
 - add pause support: soundUpdate takes a Bool (is paused) parameter
+- sampleFromMemory autodetects audio format
 
 # 0.9.4
 - fix PulseAudio default output device detection

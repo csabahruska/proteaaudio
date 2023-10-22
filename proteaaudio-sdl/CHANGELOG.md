@@ -1,6 +1,7 @@
 # 0.10.0
 - add MP3 support
 - add pause support: soundUpdate takes a Bool (is paused) parameter
+- sampleFromMemory autodetects audio format
 
 # 0.9.3
 - apply migration to GHC 9.4.* for Windows (see https://gitlab.haskell.org/ghc/ghc/-/issues/22738)
