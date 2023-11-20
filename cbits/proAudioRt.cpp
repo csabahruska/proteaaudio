@@ -63,16 +63,15 @@ DeviceAudioRt::DeviceAudioRt(unsigned int nTracks, unsigned int frequency, unsig
     memset(ma_sound,0,m_nSound*sizeof(_AudioTrack));
     m_freqOut = frequency;
 
-    try {
-        m_dac.openStream( &oParams, NULL, RTAUDIO_SINT16, frequency, &chunkSize, &cbMix, (void *)this );
-        m_dac.startStream();
+    if (RTAUDIO_NO_ERROR != m_dac.openStream( &oParams, NULL, RTAUDIO_SINT16, frequency, &chunkSize, &cbMix, (void *)this )) {
+        fprintf(stderr,"%s\n", m_dac.getErrorText().c_str());
+        return;
     }
-    catch ( RtAudioError& e ) {
-        fprintf(stderr,"%s\n", e.getMessage().c_str());
+    if (RTAUDIO_NO_ERROR != m_dac.startStream()) {
+        fprintf(stderr,"%s\n", m_dac.getErrorText().c_str());
         if(m_dac.isStreamOpen()) m_dac.closeStream();
         return;
     }
-
 }
 
 DeviceAudioRt::~DeviceAudioRt() {
