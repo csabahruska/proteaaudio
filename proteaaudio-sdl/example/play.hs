@@ -28,9 +28,9 @@ main = do
   sampleA <- sampleFromFile filename 1.0 -- volume
 
   -- start two sound tracks with shared sample data
-  sndTrkA <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+  sndTrkA <- soundPlay sampleA 1 0 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
   threadDelay oneSec -- wait 1 sec
-  sndTrkB <- soundPlay sampleA 1 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
+  sndTrkB <- soundPlay sampleA 0 1 0 1 -- left volume, right volume, time difference between left and right, pitch factor for playback
   soundActive sndTrkB >>= print
   -- play 3 sec
   threadDelay $ 3 * oneSec

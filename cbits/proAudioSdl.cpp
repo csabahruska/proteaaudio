@@ -16,7 +16,7 @@ class _AudioTrack {
 public:
     /// default constructor
     _AudioTrack(Uint8 * pData=0, unsigned int length=0) : data(pData), dlen(length) {
-        dpos=0; disparity=0.0f; volL=1.0f; volR=1.0f; pitch=1.0f; isLoop=false; isPlaying=false; isPaused=false; };
+        dpos=0; disparity=0.0f; volL=1.0f; volR=1.0f; pitch=1.0f; isLoop=false; isPlaying=false; isPaused=false; channels=2;};
     /// pointer to raw sample data
     Uint8 *data;
     /// position in playback
@@ -39,6 +39,7 @@ public:
     bool isPaused;
     /// unique id for this sound
     uint64_t uniqueId;
+    Uint8 channels;
 };
 
 DeviceAudio* DeviceAudioSdl::create(unsigned int nTracks, unsigned int frequency, unsigned int chunkSize) {
@@ -103,13 +104,16 @@ void DeviceAudioSdl::mixOutputFloat(signed short *outputBuffer, unsigned int nFr
         float left=0.0f;
         float right=0.0f;
         for (unsigned int i=0; i<m_nSound; ++i ) if(ma_sound[i].isPlaying && !ma_sound[i].isPaused) {
+            unsigned int nChannels = ma_sound[i].channels;
             if((ma_sound[i].pitch==1.0f)&&!ma_sound[i].disparity) { // use optimized default mixing:
                 unsigned int currPos=ma_sound[i].dpos+j;
                 if(ma_sound[i].isLoop) currPos%=ma_sound[i].dlen;
                 else if(currPos >= ma_sound[i].dlen) continue;
                 left +=float(*((Sint16 *)(&ma_sound[i].data[currPos])))
                     *m_volL*ma_sound[i].volL;
-                right+=float(*((Sint16 *)(&ma_sound[i].data[currPos])))
+//                float dataR = (nChannels>1) ? (float)(*((signed short *)(&ma_sound[i].sample->data()[currPos+2]))) : dataL;
+
+                right+=float(*((Sint16 *)(&ma_sound[i].data[currPos + (nChannels>1 ? 2 : 0)])))
                     *m_volR*ma_sound[i].volR;
             }
             else { // use linear interpolation and disparity:
@@ -124,18 +128,21 @@ void DeviceAudioSdl::mixOutputFloat(signed short *outputBuffer, unsigned int nFr
                     ? currPos-2*int(m_spec.freq*ma_sound[i].disparity)
                     : currPos;
 
+                if(nChannels>1) currPosR+=sizeof(signed short); // use second channel
+
                 if(ma_sound[i].isLoop) {
                     currPosL=(currPosL+10*ma_sound[i].dlen-2)%(ma_sound[i].dlen-2);
                     currPosR=(currPosR+10*ma_sound[i].dlen-2)%(ma_sound[i].dlen-2);
                 }
+                // TODO: fix this, make it same as rtaudio
                 if((currPosL < int(ma_sound[i].dlen)-2)&&(currPosL>=0)) {
                     float currWavL=(1.0f-fract)*float(*((Sint16 *)(&ma_sound[i].data[currPosL])))
-                        +fract*float(*((Sint16 *)(&ma_sound[i].data[currPosL+2])));
+                                        +fract *float(*((Sint16 *)(&ma_sound[i].data[currPosL])));
                     left +=currWavL*m_volL*ma_sound[i].volL;
                 }
                 if((currPosR < int(ma_sound[i].dlen)-2)&&(currPosR>=0)) {
                     float currWavR=(1.0f-fract)*float(*((Sint16 *)(&ma_sound[i].data[currPosR])))
-                        +fract*float(*((Sint16 *)(&ma_sound[i].data[currPosR+2])));
+                                        +fract *float(*((Sint16 *)(&ma_sound[i].data[currPosR+2])));
                     right+=currWavR*m_volR*ma_sound[i].volR;
                 }
             }

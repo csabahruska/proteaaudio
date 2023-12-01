@@ -47,6 +47,7 @@ static AudioSample* loadWavFromMemory(unsigned char * ptr, size_t len) {
   fp->size = len;
   fp->pos = 0;
   AudioSample * pSample = AudioSample::readWav((FILE*)fp, mem_fread);
+  printf("loadWavFromMemory - channels: %d\n",pSample->channels());
   delete fp;
   return pSample;
 }
@@ -67,7 +68,9 @@ static AudioSample* loadMp3FromMemory(unsigned char * file_data_ptr, size_t file
   if(!data) return 0;
   memcpy(data, info.buffer, size);
   free(info.buffer);
-  return new AudioSample(data, size, info.channels, info.hz, 16);
+  AudioSample * pSample =  new AudioSample(data, size, info.channels, info.hz, 16);
+  printf("loadMp3FromMemory - channels: %d\n",pSample->channels());
+  return pSample;
 }
 
 extern "C" {
@@ -195,6 +198,7 @@ sound_t soundLoop(sample_t sample, float volumeL, float volumeR, float disparity
 sound_t soundPlay(sample_t sample, float volumeL, float volumeR, float disparity, float pitch) {
     DeviceAudio & audio = DeviceAudio::singleton();
     if((&audio) == 0) return 0;
+    printf("soundPlay - pitch: %f\n", pitch);
     return audio.soundPlay(sample, volumeL, volumeR, disparity, pitch);
 }
 

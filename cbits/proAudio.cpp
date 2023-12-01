@@ -174,6 +174,7 @@ uint64_t DeviceAudio::sampleFromFile(const std::string & filename, float volume)
     if(it==mm_loader.end()) return 0;
     AudioSample* pSample = (*(it->second))(filename);
     if(!pSample) return 0;
+    printf("sampleFromFile - channels: %d\n",pSample->channels());
     uint64_t ret = sampleFromMemory(*pSample, volume);
     delete pSample;
     return ret;
